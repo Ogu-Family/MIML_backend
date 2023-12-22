@@ -38,4 +38,16 @@ public class Movie {
     @Column(name = "code", nullable = false, unique = true)
     private Long code;
 
+    public Movie(String title, String director, String genre, String nation, Long code) {
+        this.title = title;
+        this.director = director;
+        this.genre = genre;
+        this.nation = nation;
+        this.code = code;
+    }
+
+    public void updateAudienceCount(Long audienceCount) {
+        this.audienceCount = audienceCount;
+    }
+
 }
