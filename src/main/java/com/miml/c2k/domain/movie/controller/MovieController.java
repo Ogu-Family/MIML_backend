@@ -13,6 +13,10 @@ public class MovieController {
 
     private final MovieService movieService;
 
+    @GetMapping("/api/v1/movies/top10")
+    public void saveTop10Movie(@RequestParam("target-date") String targetDate) {
+        movieService.saveBoxOfficeTop10ByTargetDate(targetDate);
+    }
 
     @GetMapping("/api/v1/movie")
     public void saveMovieByMovieCode(@RequestParam("code") String movieCode) {
