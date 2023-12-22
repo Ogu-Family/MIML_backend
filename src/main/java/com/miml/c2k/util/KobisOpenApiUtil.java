@@ -27,6 +27,8 @@ public class KobisOpenApiUtil {
     private final CloseableHttpClient httpClient;
     @Value("${spring.kobis.url.base}")
     private String baseUrl;
+    @Value("${spring.kobis.url.boxoffice-top10}")
+    private String boxOfficeTop10Url;
     @Value("${spring.kobis.url.movie-info}")
     private String movieInfoUrl;
     @Value("${spring.kobis.key}")
@@ -35,6 +37,41 @@ public class KobisOpenApiUtil {
     public KobisOpenApiUtil(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
         httpClient = HttpClientBuilder.create().build();
+    }
+
+    @Transactional
+    public void saveBoxOfficeTop10ByTargetDate(String targetDate) {
+        String boxOfficeTop10BaseUrl = baseUrl + boxOfficeTop10Url;
+        try {
+            // HTTP GET 요청 생성
+            URI requestBoxOfficeTop10Uri = new URIBuilder(boxOfficeTop10BaseUrl)
+                    .addParameter("key", key)
+                    .addParameter("targetDt", targetDate)
+                    .addParameter("weekGb", String.valueOf(0))
+                    .build();
+
+            // 요청 전송 및 응답 수신
+            JsonNode rootNode = executeHttpRequestAndGetJsonResponse(requestBoxOfficeTop10Uri);
+
+            // 데이터 필터링
+            JsonNode weeklyBoxOfficeList = rootNode.path("boxOfficeResult")
+                    .path("weeklyBoxOfficeList");
+            for (JsonNode movieNode : weeklyBoxOfficeList) {
+                Long audienceCount = movieNode.path("audiCnt").asLong();
+                String code = movieNode.path("movieCd").asText();
+
+                Movie movie = getMovieInfoByMovieCodeAndSave(code);
+                movie.updateAudienceCount(audienceCount);
+            }
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Movie getMovieInfoByMovieCodeAndSave(String movieCode) {
