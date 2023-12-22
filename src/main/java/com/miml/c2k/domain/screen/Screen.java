@@ -11,15 +11,16 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Screen {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "num", nullable = false)
+    private Integer num;
 
-    @Column(name = "seat_num", nullable = false, columnDefinition = "int default 0")
-    private Integer seatNum;
+    @Column(name = "seat_cnt", nullable = false, columnDefinition = "int default 0")
+    private Integer seatCnt;
 
     @ManyToOne
     @JoinColumn(name = "theater_id")
