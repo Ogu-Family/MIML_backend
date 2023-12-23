@@ -1,7 +1,5 @@
 package com.miml.c2k.domain.movie;
 
-import com.miml.c2k.domain.movie.dto.MovieResponseDto;
-import com.miml.c2k.domain.movie.dto.PlayingStatusType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,10 +48,5 @@ public class Movie {
 
     public void updateAudienceCount(Long audienceCount) {
         this.audienceCount = audienceCount;
-    }
-
-    public MovieResponseDto toMovieResponseDto(PlayingStatusType playingStatus) {
-        return new MovieResponseDto(this.id, this.title, this.director, this.genre, this.nation,
-                this.poster, this.audienceCount, this.code, playingStatus);
     }
 }

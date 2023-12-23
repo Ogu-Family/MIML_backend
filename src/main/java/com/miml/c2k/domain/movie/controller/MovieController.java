@@ -1,8 +1,8 @@
 package com.miml.c2k.domain.movie.controller;
 
 import com.miml.c2k.domain.movie.dto.MovieResponseDto;
-import com.miml.c2k.domain.movie.service.MovieService;
 import com.miml.c2k.domain.movie.dto.PlayingStatusType;
+import com.miml.c2k.domain.movie.service.MovieService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
