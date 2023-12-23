@@ -1,8 +1,8 @@
 package com.miml.c2k.domain.movie.service;
 
+import com.miml.c2k.domain.movie.Movie;
 import com.miml.c2k.domain.movie.dto.MovieResponseDto;
 import com.miml.c2k.domain.movie.dto.PlayingStatusType;
-import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.schedule.ScheduleRepository;
 import com.miml.c2k.util.KobisOpenApiUtil;
 import java.time.LocalDateTime;
@@ -18,10 +18,10 @@ public class MovieService {
     private final KobisOpenApiUtil kobisOpenApiUtil;
 
     public List<MovieResponseDto> getMoviesPlayingOnScreen(PlayingStatusType playingStatus) {
-        List<Schedule> schedulesAfterCurrentTime = scheduleRepository.findMoviesStartingAfterCurrentTime(
+        List<Movie> moviesAfterCurrentTime = scheduleRepository.findMoviesStartingAfterCurrentTime(
                 LocalDateTime.now());
-        return schedulesAfterCurrentTime.stream().map(
-                schedule -> MovieResponseDto.create(schedule.getMovie(), playingStatus)
+        return moviesAfterCurrentTime.stream().map(
+                movie -> MovieResponseDto.create(movie, playingStatus)
         ).toList();
     }
 
