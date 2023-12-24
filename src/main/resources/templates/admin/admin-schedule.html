@@ -12,7 +12,7 @@
   <form action="/admin/schedule" method="post">
     <div>
       <p>영화 선택</p>
-      <select class="form-select" name="movie" onchange="showSelectedMovieInfo(this)">
+      <select class="form-select" name="movieId" onchange="showSelectedMovieInfo(this)">
         <option value="default-movie" selected>상영할 영화를 선택합니다.</option>
         <option th:id="'movie' + ${movie.id}" th:each="movie: ${movieResponse.data}" th:value="${movie.id}" th:text="${movie.title}" th:attr="data-poster=${movie.poster}, data-movie-id=${movie.id}, data-director=${movie.director}">목록</option>
       </select>
@@ -28,11 +28,11 @@
     </div>
     <div>
       <label for="theaterSelect">영화관 선택</label>
-      <select id="theaterSelect" name="theater" class="form-select"  onchange="theaterChange(this)">
+      <select id="theaterSelect" name="theaterId" class="form-select"  onchange="theaterChange(this)">
         <option>선택하세요</option>
       </select>
       <label for="screenSelect">상영관 선택</label>
-      <select id="screenSelect" name="screen" class="form-select"></select>
+      <select id="screenSelect" name="screenId" class="form-select"></select>
     </div>
     <div>
       <label for="startTime">상영 시작 시각</label>
