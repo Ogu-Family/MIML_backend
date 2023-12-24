@@ -1,7 +1,9 @@
 package com.miml.c2k.domain.screen.dto;
 
 import com.miml.c2k.domain.screen.Screen;
+import lombok.Getter;
 
+@Getter
 public class ScreenAdminResponseDto {
 
     private Long id;

@@ -1,7 +1,9 @@
 package com.miml.c2k.domain.movie.dto;
 
 import com.miml.c2k.domain.movie.Movie;
+import lombok.Getter;
 
+@Getter
 public class MovieAdminResponseDto {
     private final Long id;
     private final String title;

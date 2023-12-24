@@ -1,7 +1,9 @@
 package com.miml.c2k.domain.theater.dto;
 
 import com.miml.c2k.domain.theater.Theater;
+import lombok.Getter;
 
+@Getter
 public class TheaterAdminResponseDto {
 
     private Long id;

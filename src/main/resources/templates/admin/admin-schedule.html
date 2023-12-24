@@ -14,7 +14,7 @@
       <p>영화 선택</p>
       <select class="form-select" name="movieId" onchange="showSelectedMovieInfo(this)">
         <option value="default-movie" selected>상영할 영화를 선택합니다.</option>
-        <option th:id="'movie' + ${movie.id}" th:each="movie: ${movieAdminResponseDto}" th:value="${movie.id}" th:text="${movie.title}" th:attr="data-poster=${movie.poster}, data-movie-id=${movie.id}, data-director=${movie.director}">목록</option>
+        <option th:id="'movie' + ${movie.id}" th:each="movie: ${movieAdminResponseDtos}" th:value="${movie.id}" th:text="${movie.title}" th:attr="data-poster=${movie.poster}, data-movie-id=${movie.id}, data-director=${movie.director}">목록</option>
       </select>
     </div>
     <div>
@@ -65,7 +65,7 @@
 
     const selectedOption = document.querySelector("#movie" + selectTag.value);
 
-    document.querySelector("#movieImg").src = selectedOption.getAttribute("data-poster");
+    document.querySelector("#movieImg").src = "/" + selectedOption.getAttribute("data-poster");
     document.querySelector("#movieId").textContent = "영화 id:" + selectedOption.getAttribute("data-movie-id");
     document.querySelector("#movieDirector").textContent = "감독: " + selectedOption.getAttribute("data-director");
   }
@@ -108,7 +108,7 @@
       const screenOption = document.createElement("option");
 
       screenOption.value = screen.id;
-      screenOption.text = screen.name;
+      screenOption.text = screen.num;
 
       screenSelect.appendChild(screenOption);
     });
