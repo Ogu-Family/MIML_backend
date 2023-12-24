@@ -5,17 +5,15 @@ import com.miml.c2k.domain.screen.dto.ScreenAdminResponseDto;
 import com.miml.c2k.domain.screen.repository.ScreenRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
-@RestController
+@Service
 @RequiredArgsConstructor
-public class ScreenAdminController {
+public class ScreenService {
 
     private final ScreenRepository screenRepository;
 
-    @GetMapping("/api/v1/screens")
-    public List<ScreenAdminResponseDto> getAllScreen() {
+    public List<ScreenAdminResponseDto> getAllScreens() {
         List<Screen> screens = screenRepository.findAll();
 
         return screens.stream().map(ScreenAdminResponseDto::create).toList();
