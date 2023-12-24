@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
-public class AdminScheduleController {
+public class ScheduleAdminController {
 
     private final MovieService movieService;
     private final ScheduleService scheduleService;
