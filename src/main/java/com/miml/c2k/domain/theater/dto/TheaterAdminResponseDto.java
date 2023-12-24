@@ -1,6 +1,5 @@
 package com.miml.c2k.domain.theater.dto;
 
-import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.theater.Theater;
 
 public class TheaterAdminResponseDto {
@@ -10,7 +9,7 @@ public class TheaterAdminResponseDto {
 
     private TheaterAdminResponseDto(Long id, String name) {
         this.id = id;
-
+        this.name = name;
     }
 
     public static TheaterAdminResponseDto create(Theater theater) {
