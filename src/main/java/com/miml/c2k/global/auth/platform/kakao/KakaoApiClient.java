@@ -31,6 +31,12 @@ public class KakaoApiClient implements OAuthApiClient {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    private String redirectUri;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+    private String clientSecret;
+
     @Override
     public OAuthProvider oAuthProvider() {
         return OAuthProvider.KAKAO;
@@ -44,6 +50,8 @@ public class KakaoApiClient implements OAuthApiClient {
         MultiValueMap<String, String> body = params.makeBody();
         body.add("grant_type", GRANT_TYPE);
         body.add("client_id", clientId);
+        body.add("redirect_uri", redirectUri);
+        body.add("client_secret", clientSecret);
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
