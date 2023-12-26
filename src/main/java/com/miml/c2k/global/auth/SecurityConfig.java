@@ -12,17 +12,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authz) -> authz
-                        .anyRequest().permitAll()
-                );
-
-        return httpSecurity.build();
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        return http
+                .formLogin() // 폼 기반 로그인 설정, 일단 기본적으로 비활성화
+                .disable()
+                .csrf().disable()
+                .build();
     }
 }
