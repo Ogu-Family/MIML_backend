@@ -108,7 +108,13 @@ public class KobisOpenApiUtil {
                         : null;
                 // TODO: 포스터 별도 크롤링 필요
 
-                return movieRepository.save(new Movie(title, director, genre, nation, code));
+                return movieRepository.save(Movie.builder()
+                        .title(title)
+                        .director(director)
+                        .genre(genre)
+                        .nation(nation)
+                        .code(code)
+                        .build());
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             } catch (ClientProtocolException e) {
