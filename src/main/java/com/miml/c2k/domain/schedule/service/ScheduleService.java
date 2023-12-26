@@ -35,7 +35,7 @@ public class ScheduleService {
     }
 
     private void validateNewSchedule(ScheduleSavingDto scheduleSavingDto) {
-        int count = scheduleRepository.countAllByScreenBetweenTimeline(scheduleSavingDto.getScreenId(),
+        int count = scheduleRepository.countAllByScreenIdBetweenTimeline(scheduleSavingDto.getScreenId(),
             scheduleSavingDto.getStartTime(),
             scheduleSavingDto.getEndTime());
 

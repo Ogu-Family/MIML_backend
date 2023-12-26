@@ -15,5 +15,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Movie> findMoviesStartingAfterCurrentTime(LocalDateTime currentTime);
 
     @Query("SELECT count(s) FROM Schedule s WHERE (s.screen.id = :screenId) AND (s.startTime BETWEEN :startTime AND :endTime) OR (s.endTime BETWEEN :startTime AND :endTime)")
-    int countAllByScreenBetweenTimeline(Long screenId, LocalDateTime startTime, LocalDateTime endTime);
+    int countAllByScreenIdBetweenTimeline(Long screenId, LocalDateTime startTime, LocalDateTime endTime);
 }
