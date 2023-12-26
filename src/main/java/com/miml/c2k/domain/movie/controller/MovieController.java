@@ -6,6 +6,7 @@ import com.miml.c2k.domain.movie.service.MovieService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +27,7 @@ public class MovieController {
         movieService.saveBoxOfficeTop10ByTargetDate(targetDate);
     }
 
-    @GetMapping("/api/v1/movie")
+    @PostMapping("/api/v1/admin/movie")
     public void saveMovieByMovieCode(@RequestParam("code") String movieCode) {
         movieService.saveMovieByMovieCode(movieCode);
     }
