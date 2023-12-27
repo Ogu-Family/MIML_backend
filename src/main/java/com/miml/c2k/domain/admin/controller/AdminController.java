@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,5 +34,10 @@ public class AdminController {
         scheduleService.saveSchedule(scheduleSavingDto);
 
         return "redirect:/admin/schedule";
+    }
+
+    @PostMapping("/admin/movie")
+    public void saveMovieByMovieCode(@RequestParam("code") String movieCode) {
+        movieService.saveMovieByMovieCode(movieCode);
     }
 }
