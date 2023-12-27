@@ -19,7 +19,7 @@ public class KakaoLoginParams implements OAuthLoginParams {
     }
 
     @Override
-    public OAuthProvider oAuthProvider() {
+    public OAuthProvider getOAuthProvider() {
         return OAuthProvider.KAKAO;
     }
 

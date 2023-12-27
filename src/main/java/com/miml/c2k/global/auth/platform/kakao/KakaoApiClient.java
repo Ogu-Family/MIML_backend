@@ -38,7 +38,7 @@ public class KakaoApiClient implements OAuthApiClient {
     private String clientSecret;
 
     @Override
-    public OAuthProvider oAuthProvider() {
+    public OAuthProvider getOAuthProvider() {
         return OAuthProvider.KAKAO;
     }
 

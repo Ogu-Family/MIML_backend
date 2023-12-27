@@ -4,7 +4,7 @@ import com.miml.c2k.domain.member.OAuthProvider;
 
 public interface OAuthApiClient {
 
-    OAuthProvider oAuthProvider();
+    OAuthProvider getOAuthProvider();
     String requestAccessToken(OAuthLoginParams params);
     OAuthInfoResponse requestOauthInfo(String accessToken);
 

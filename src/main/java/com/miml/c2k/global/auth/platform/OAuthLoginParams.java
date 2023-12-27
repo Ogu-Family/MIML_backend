@@ -6,7 +6,7 @@ import org.springframework.util.MultiValueMap;
 public interface OAuthLoginParams {
 
     void setAuthorization(String authorizationCode);
-    OAuthProvider oAuthProvider();
+    OAuthProvider getOAuthProvider();
     MultiValueMap<String, String> makeBody();
 
 }
