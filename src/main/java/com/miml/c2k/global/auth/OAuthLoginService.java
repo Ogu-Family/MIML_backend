@@ -28,10 +28,10 @@ public class OAuthLoginService {
     private Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
         return memberRepository.findByEmail(oAuthInfoResponse.getEmail())
                 .map(Member::getId)
-                .orElseGet(() -> newMember(oAuthInfoResponse));
+                .orElseGet(() -> createMember(oAuthInfoResponse));
     }
 
-    private Long newMember(OAuthInfoResponse oAuthInfoResponse) {
+    private Long createMember(OAuthInfoResponse oAuthInfoResponse) {
         Member member = Member.builder()
                 .email(oAuthInfoResponse.getEmail())
                 .nickname(oAuthInfoResponse.getNickname())
