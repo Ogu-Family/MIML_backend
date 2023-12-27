@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public class ScreenAdminResponseDto {
 
-    private Long id;
-    private int num;
-    private Long theaterId;
+    private final Long id;
+    private final int num;
+    private final Long theaterId;
 
     private ScreenAdminResponseDto(Long id, int num, Long theaterId) {
         this.id = id;
@@ -18,7 +18,7 @@ public class ScreenAdminResponseDto {
 
     public static ScreenAdminResponseDto create(Screen screen) {
         return new ScreenAdminResponseDto(screen.getId(),
-            screen.getNum(),
-            screen.getTheater().getId());
+                screen.getNum(),
+                screen.getTheater().getId());
     }
 }

@@ -13,6 +13,7 @@ import lombok.Getter;
 @Entity
 @Getter
 public class Screen {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,8 +21,8 @@ public class Screen {
     @Column(name = "num", nullable = false)
     private Integer num;
 
-    @Column(name = "seat_cnt", nullable = false, columnDefinition = "int default 0")
-    private Integer seatCnt;
+    @Column(name = "seat_count", nullable = false, columnDefinition = "int default 0")
+    private Integer seatCount;
 
     @ManyToOne
     @JoinColumn(name = "theater_id")

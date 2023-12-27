@@ -12,7 +12,8 @@ public class ScheduleSavingDto {
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
 
-    public ScheduleSavingDto(Long movieId, Long screenId, LocalDateTime startTime, LocalDateTime endTime) {
+    public ScheduleSavingDto(Long movieId, Long screenId, LocalDateTime startTime,
+            LocalDateTime endTime) {
         this.movieId = movieId;
         this.screenId = screenId;
         this.startTime = startTime;

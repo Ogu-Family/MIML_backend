@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class MovieAdminResponseDto {
+
     private final Long id;
     private final String title;
     private final String director;
@@ -19,8 +20,8 @@ public class MovieAdminResponseDto {
 
     public static MovieAdminResponseDto create(Movie movie) {
         return new MovieAdminResponseDto(movie.getId(),
-            movie.getTitle(),
-            movie.getDirector(),
-            movie.getPoster());
+                movie.getTitle(),
+                movie.getDirector(),
+                movie.getPoster());
     }
 }

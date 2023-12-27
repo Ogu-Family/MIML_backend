@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Schedule {
+
     private static final int EARLY_MORNING_LIMIT = 10;
     private static final int EARLY_MORNING_FEE = 8_000;
     private static final int NORMAL_FEE = 12_000;
@@ -47,15 +48,15 @@ public class Schedule {
         this.endTime = endTime;
         this.fee = calculateFee();
     }
-    
+
     public void updateScreen(Screen screen) {
         this.screen = screen;
     }
-    
+
     public void updateMovie(Movie movie) {
         this.movie = movie;
     }
-    
+
     private int calculateFee() {
         return this.startTime.getHour() < EARLY_MORNING_LIMIT ? EARLY_MORNING_FEE : NORMAL_FEE;
     }
