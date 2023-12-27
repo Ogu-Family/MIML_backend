@@ -13,6 +13,7 @@ import lombok.Getter;
 @Entity
 @Getter
 public class Screen {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

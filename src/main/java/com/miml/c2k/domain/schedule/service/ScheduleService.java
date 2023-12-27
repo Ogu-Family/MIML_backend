@@ -24,9 +24,9 @@ public class ScheduleService {
 
         Schedule schedule = scheduleSavingDto.toEntity();
         Movie movie = movieRepository.findById(scheduleSavingDto.getMovieId()).orElseThrow(
-            EntityNotFoundException::new); // TODO: 사용자 정의 예외 생성
+                EntityNotFoundException::new); // TODO: 사용자 정의 예외 생성
         Screen screen = screenRepository.findById(scheduleSavingDto.getScreenId())
-            .orElseThrow(EntityNotFoundException::new); // TODO: 사용자 정의 예외 생성
+                .orElseThrow(EntityNotFoundException::new); // TODO: 사용자 정의 예외 생성
 
         schedule.updateMovie(movie);
         schedule.updateScreen(screen);
@@ -35,9 +35,10 @@ public class ScheduleService {
     }
 
     private void validateNewSchedule(ScheduleSavingDto scheduleSavingDto) {
-        int count = scheduleRepository.countAllByScreenIdBetweenTimeline(scheduleSavingDto.getScreenId(),
-            scheduleSavingDto.getStartTime(),
-            scheduleSavingDto.getEndTime());
+        int count = scheduleRepository.countAllByScreenIdBetweenTimeline(
+                scheduleSavingDto.getScreenId(),
+                scheduleSavingDto.getStartTime(),
+                scheduleSavingDto.getEndTime());
 
         if (count > 0 || scheduleSavingDto.getStartTime().isAfter(scheduleSavingDto.getEndTime())) {
             throw new RuntimeException(); // TODO: 사용자 정의 예외 생성

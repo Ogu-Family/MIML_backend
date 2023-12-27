@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Schedule {
+
     private static final int EARLY_MORNING_LIMIT = 10;
     private static final int EARLY_MORNING_FEE = 8_000;
     private static final int NORMAL_FEE = 12_000;

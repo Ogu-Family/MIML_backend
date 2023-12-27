@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 public class TheaterAdminResponseDto {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     private TheaterAdminResponseDto(Long id, String name) {
         this.id = id;
