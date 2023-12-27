@@ -16,12 +16,12 @@ public class RequestOAuthInfoService {
 
     public RequestOAuthInfoService(List<OAuthApiClient> clients) {
         this.clients = clients.stream().collect(
-                Collectors.toUnmodifiableMap(OAuthApiClient::oAuthProvider, Function.identity())
+                Collectors.toUnmodifiableMap(OAuthApiClient::getOAuthProvider, Function.identity())
         );
     }
 
     public OAuthInfoResponse request(OAuthLoginParams params) {
-        OAuthApiClient client = clients.get(params.oAuthProvider());
+        OAuthApiClient client = clients.get(params.getOAuthProvider());
         String accessToken = client.requestAccessToken(params);
         return client.requestOauthInfo(accessToken);
     }
