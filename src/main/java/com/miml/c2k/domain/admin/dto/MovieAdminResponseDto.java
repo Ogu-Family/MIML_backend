@@ -1,4 +1,4 @@
-package com.miml.c2k.domain.movie.dto;
+package com.miml.c2k.domain.admin.dto;
 
 import com.miml.c2k.domain.movie.Movie;
 import lombok.Getter;

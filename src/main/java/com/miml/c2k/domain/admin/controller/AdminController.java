@@ -1,6 +1,6 @@
-package com.miml.c2k.domain.schedule.controller;
+package com.miml.c2k.domain.admin.controller;
 
-import com.miml.c2k.domain.movie.dto.MovieAdminResponseDto;
+import com.miml.c2k.domain.admin.dto.MovieAdminResponseDto;
 import com.miml.c2k.domain.movie.service.MovieService;
 import com.miml.c2k.domain.schedule.dto.ScheduleSavingDto;
 import com.miml.c2k.domain.schedule.service.ScheduleService;
@@ -11,11 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
-public class ScheduleAdminController {
+public class AdminController {
 
     private final MovieService movieService;
     private final ScheduleService scheduleService;
@@ -30,11 +29,8 @@ public class ScheduleAdminController {
     }
 
     @PostMapping("/admin/schedule")
-    public String addSchedule(@ModelAttribute ScheduleSavingDto scheduleSavingDto,
-        RedirectAttributes redirectAttributes) {
+    public String addSchedule(@ModelAttribute ScheduleSavingDto scheduleSavingDto) {
         scheduleService.saveSchedule(scheduleSavingDto);
-
-        redirectAttributes.addFlashAttribute("msg", "성공적으로 등록 되었습니다.");
 
         return "redirect:/admin/schedule";
     }

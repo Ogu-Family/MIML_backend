@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class TheaterAdminController {
+public class TheaterController {
 
     private final TheaterService theaterService;
 

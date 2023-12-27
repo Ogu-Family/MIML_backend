@@ -1,7 +1,7 @@
 package com.miml.c2k.domain.movie.service;
 
 import com.miml.c2k.domain.movie.Movie;
-import com.miml.c2k.domain.movie.dto.MovieAdminResponseDto;
+import com.miml.c2k.domain.admin.dto.MovieAdminResponseDto;
 import com.miml.c2k.domain.movie.dto.MovieResponseDto;
 import com.miml.c2k.domain.movie.dto.PlayingStatusType;
 import com.miml.c2k.domain.movie.repository.MovieRepository;
