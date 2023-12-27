@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Seat {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

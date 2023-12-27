@@ -13,6 +13,7 @@ import jakarta.persistence.OneToOne;
 
 @Entity
 public class Ticket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

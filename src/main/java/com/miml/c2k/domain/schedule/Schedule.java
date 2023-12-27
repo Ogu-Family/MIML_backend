@@ -10,9 +10,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class Schedule {
+
+    private static final int EARLY_MORNING_LIMIT = 10;
+    private static final int EARLY_MORNING_FEE = 8_000;
+    private static final int NORMAL_FEE = 12_000;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,4 +42,22 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
+
+    public Schedule(LocalDateTime startTime, LocalDateTime endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.fee = calculateFee();
+    }
+
+    public void updateScreen(Screen screen) {
+        this.screen = screen;
+    }
+
+    public void updateMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+    private int calculateFee() {
+        return this.startTime.getHour() < EARLY_MORNING_LIMIT ? EARLY_MORNING_FEE : NORMAL_FEE;
+    }
 }

@@ -8,18 +8,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Screen {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "num", nullable = false)
+    private Integer num;
 
-    @Column(name = "seat_num", nullable = false, columnDefinition = "int default 0")
-    private Integer seatNum;
+    @Column(name = "seat_count", nullable = false, columnDefinition = "int default 0")
+    private Integer seatCount;
 
     @ManyToOne
     @JoinColumn(name = "theater_id")
