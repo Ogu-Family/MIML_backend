@@ -76,7 +76,7 @@ public class KobisOpenApiUtil {
 
     public Movie getMovieInfoByMovieCodeAndSave(String movieCode) {
         String movieInfoBaseUrl = baseUrl + movieInfoUrl;
-        Optional<Movie> movie = movieRepository.findByCode(Long.valueOf(movieCode));
+        Optional<Movie> movie = movieRepository.findByCode(movieCode);
         if (movie.isPresent()) {
             return movie.get();
         } else {
@@ -91,11 +91,10 @@ public class KobisOpenApiUtil {
                 JsonNode rootNode = executeHttpRequestAndGetJsonResponse(requestMovieInfoUri);
 
                 // 데이터 필터링
-                Long code;
-                String title, genre, director, nation;
+                String code, title, genre, director, nation, openDate;
 
                 JsonNode movieInfoJsonNode = rootNode.path("movieInfoResult").path("movieInfo");
-                code = movieInfoJsonNode.path("movieCd").asLong();
+                code = movieInfoJsonNode.path("movieCd").asText();
                 title = movieInfoJsonNode.path("movieNm").asText();
                 JsonNode directorsNode = movieInfoJsonNode.path("directors");
                 director =

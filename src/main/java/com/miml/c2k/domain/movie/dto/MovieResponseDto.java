@@ -15,7 +15,7 @@ public class MovieResponseDto {
     private final String nation;
     private final String poster;
     private final Long audienceCount;
-    private final Long code;
+    private final String code;
     private final PlayingStatusType playingStatus;
 
     private MovieResponseDto(Movie movie, PlayingStatusType playingStatus) {
