@@ -21,7 +21,7 @@
   <div>
     <button type="button" onclick="loadSchedules()">검색</button>
   </div>
-  <div id="schedules" name="schedules"></div>
+  <div id="schedules"></div>
   <div id="toast"></div>
 </body>
 <script th:inline="javascript">
@@ -37,11 +37,12 @@
       document.querySelector("#dateSelect"),
       document.querySelector("#schedules")];
 
-    console.log(movieSelect.value, theaterSelector.value, dateSelect.value);
     if (!movieSelect.value || !theaterSelector.value || !dateSelect.value) {
       toastPopUp("모든 값을 입력해 주세요!");
       return;
     }
+
+    schedules.innerHTML = "";
 
     const params = new URLSearchParams({
       movieId: movieSelect.value,
@@ -53,31 +54,18 @@
 
     await fetch(`/api/v1/schedules?${params.toString()}`)
     .then(res => res.json())
-    .then(data => {
-      data.forEach((schedule) => {
+    .then(dtos => {
+      dtos.data.forEach((schedule) => {
         const scheduleButton = document.createElement("button");
-        scheduleButton.textContent = schedule.toString();
-        scheduleButton.onclick = async () => {
-          await requestSeatSelect(schedule.id);
+        scheduleButton.textContent = schedule.screenNum + "관\n" + schedule.startTime + " ~ " + schedule.endTime + "\n" + schedule.availableSeatsCount + "/" + schedule.totalSeatsCount;
+        scheduleButton.value = schedule.id;
+        scheduleButton.onclick = () => {
+          window.location.href = "/seats?scheduleId=" + schedule.id;
         };
 
         schedules.appendChild(scheduleButton);
       });
     })
-  }
-
-  const requestSeatSelect = async (scheduleId) => {
-    return await fetch("/seat",
-        {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            scheduleId: scheduleId
-          })
-        })
-    .catch(err => console.log("에러 발생: " + err));
   }
 
   const setDateInputLimit = () => {
