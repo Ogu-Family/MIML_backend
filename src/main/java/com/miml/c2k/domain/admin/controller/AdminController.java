@@ -36,8 +36,22 @@ public class AdminController {
         return "redirect:/admin/schedule";
     }
 
+    @GetMapping("/admin/insert-movie")
+    public String showInsertMoviePage() {
+        return "admin/insert-movie";
+    }
+
     @PostMapping("/admin/movie")
-    public void saveMovieByMovieCode(@RequestParam("code") String movieCode) {
+    public String saveMovieByMovieCode(@RequestParam("code") String movieCode) {
         movieService.saveMovieByMovieCode(movieCode);
+
+        return "admin/insert-movie";
+    }
+
+    @PostMapping("/admin/movies/top10")
+    public String saveTop10Movie(@RequestParam("target_date") String targetDate) {
+        movieService.saveBoxOfficeTop10ByTargetDate(targetDate);
+
+        return "admin/insert-movie";
     }
 }

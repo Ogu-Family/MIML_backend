@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Save Movie by Code</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      margin: 50px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      width: 300px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Save Movie by Code</h1>
+
+<!-- Movie Code Form -->
+<form action="/admin/movie" method="post">
+  <label for="code">Movie Code:</label>
+  <input id="code" name="code" required type="text">
+  <br>
+  <button type="submit">Save Movie</button>
+</form>
+
+<h1>Save Top 10 Movies</h1>
+
+<!-- Top 10 Movies Form -->
+<form action="/admin/movies/top10" method="post">
+  <label for="targetDate">Target Date:</label>
+  <input id="targetDate" name="target_date" placeholder="YYYYMMDD" required type="text">
+  <br>
+  <button type="submit">Save Top 10 Movies</button>
+</form>
+
+</body>
+</html>
+
