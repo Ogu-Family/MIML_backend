@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Movies</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+<h1 th:text="${playingStatusTitle}">Movies</h1>
+
+<!-- Movie List -->
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Director</th>
+    <th>Genre</th>
+    <th>Nation</th>
+    <th>Poster</th>
+    <th th:if="${playingStatusTitle == '상영 중'}">Audience Count</th>
+    <th>Code</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="movie : ${movies}">
+    <td th:text="${movie.id}"></td>
+    <td th:text="${movie.title}"></td>
+    <td th:text="${movie.director}"></td>
+    <td th:text="${movie.genre}"></td>
+    <td th:text="${movie.nation}"></td>
+    <td th:text="${movie.poster}"></td>
+    <td th:if="${movie.playingStatus == 1}">
+      <span th:if="${movie.audienceCount == 0}">집계 되지 않음</span>
+      <span th:if="${movie.audienceCount != 0}" th:text="${movie.audienceCount}"></span>
+    </td>
+    <td th:text="${movie.code}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
