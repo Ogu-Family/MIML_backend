@@ -42,7 +42,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/movies")
-    public void saveMovieByMovieCode(@RequestParam("code") String movieCode) {
+    public String saveMovieByMovieCode(@RequestParam("code") String movieCode) {
         movieService.saveMovieByMovieCode(movieCode);
 
         return "admin/insert-movie";
