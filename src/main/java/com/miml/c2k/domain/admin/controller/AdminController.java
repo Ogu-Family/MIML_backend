@@ -36,7 +36,7 @@ public class AdminController {
         return "redirect:/admin/schedule";
     }
 
-    @GetMapping("/admin/insert-movie")
+    @GetMapping("/admin/movies/insert")
     public String showInsertMoviePage() {
         return "admin/insert-movie";
     }
