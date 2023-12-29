@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    @GetMapping("/api/v1/movies")
+    @GetMapping("/movies")
     public String getMoviesByPlayingStatus(@RequestParam("playing_status") int num, Model model) {
         List<MovieResponseDto> movies;
         PlayingStatusType playingStatus = PlayingStatusType.getValueByNum(num);
@@ -31,4 +32,9 @@ public class MovieController {
         return "member/movie-list";
     }
 
+    @GetMapping("/api/v1/movies")
+    @ResponseBody
+    public List<MovieResponseDto> getMoviesPlayingOnScreen() {
+        return movieService.getMoviesPlayingOnScreen();
+    }
 }
