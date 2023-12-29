@@ -20,7 +20,7 @@ public class AdminController {
     private final MovieService movieService;
     private final ScheduleService scheduleService;
 
-    @GetMapping("/admin/schedule")
+    @GetMapping("/admin/schedules")
     public String showAddSchedulePage(Model model) {
         List<MovieAdminResponseDto> movieAdminResponseDtos = movieService.getAllMovies();
 
@@ -29,11 +29,11 @@ public class AdminController {
         return "admin/admin-schedule";
     }
 
-    @PostMapping("/admin/schedule")
+    @PostMapping("/admin/schedules")
     public String addSchedule(@ModelAttribute ScheduleSavingDto scheduleSavingDto) {
         scheduleService.saveSchedule(scheduleSavingDto);
 
-        return "redirect:/admin/schedule";
+        return "redirect:/admin/schedules";
     }
 
     @GetMapping("/admin/movies/insert")
@@ -41,8 +41,8 @@ public class AdminController {
         return "admin/insert-movie";
     }
 
-    @PostMapping("/admin/movie")
-    public String saveMovieByMovieCode(@RequestParam("code") String movieCode) {
+    @PostMapping("/admin/movies")
+    public void saveMovieByMovieCode(@RequestParam("code") String movieCode) {
         movieService.saveMovieByMovieCode(movieCode);
 
         return "admin/insert-movie";

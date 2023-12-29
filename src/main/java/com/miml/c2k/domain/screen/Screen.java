@@ -3,6 +3,7 @@ package com.miml.c2k.domain.screen;
 import com.miml.c2k.domain.theater.Theater;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,7 +25,7 @@ public class Screen {
     @Column(name = "seat_count", nullable = false, columnDefinition = "int default 0")
     private Integer seatCount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theater_id")
     private Theater theater;
 }
