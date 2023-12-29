@@ -1,25 +1,43 @@
 package com.miml.c2k.domain.member.controller;
 
-import com.miml.c2k.domain.member.Member;
-import com.miml.c2k.domain.member.repository.MemberRepository;
+import com.miml.c2k.domain.member.dto.MemberResponseDto;
+import com.miml.c2k.domain.member.dto.MemberUpdateDto;
+import com.miml.c2k.domain.member.service.MemberService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
 public class MemberController {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
-    @GetMapping
-    public ResponseEntity<List<Member>> findAll() {
-        return ResponseEntity.ok(memberRepository.findAll());
+    @GetMapping("/api/v1/members")
+    public ResponseEntity<List<MemberResponseDto>> findAllMembers() {
+        return ResponseEntity.ok(memberService.findAllMembers());
     }
 
+    @GetMapping("/api/v1/myPage/{accessToken}")
+    public String myPage(@PathVariable String accessToken, Model model) {
+        MemberResponseDto memberResponseDto = memberService.findMemberByAccessToken(accessToken);
+
+        model.addAttribute("memberResponseDto", memberResponseDto);
+
+        return "/myPage/myPage";
+    }
+
+    @PutMapping("/api/v1/myPage/{accessToken}")
+    public ResponseEntity<MemberResponseDto> update(@PathVariable String accessToken, @RequestBody MemberUpdateDto updateMemberDto) {
+        MemberResponseDto memberResponseDto = memberService.updateMember(accessToken, updateMemberDto);
+
+        return ResponseEntity.ok(memberResponseDto);
+    }
 
 }
