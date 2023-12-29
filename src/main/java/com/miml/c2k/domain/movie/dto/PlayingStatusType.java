@@ -21,4 +21,8 @@ public enum PlayingStatusType {
 
         throw new IllegalArgumentException("예외 처리 필요");
     }
+
+    public String getName() {
+        return name;
+    }
 }

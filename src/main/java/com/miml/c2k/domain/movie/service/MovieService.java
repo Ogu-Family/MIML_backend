@@ -7,6 +7,7 @@ import com.miml.c2k.domain.movie.dto.PlayingStatusType;
 import com.miml.c2k.domain.movie.repository.MovieRepository;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.util.KobisOpenApiUtil;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,19 @@ public class MovieService {
     private final KobisOpenApiUtil kobisOpenApiUtil;
     private final MovieRepository movieRepository;
 
-    public List<MovieResponseDto> getMoviesPlayingOnScreen(PlayingStatusType playingStatus) {
+    public List<MovieResponseDto> getMoviesPlayingOnScreen() {
         List<Movie> moviesAfterCurrentTime = scheduleRepository.findMoviesStartingAfterCurrentTime(
                 LocalDateTime.now());
         return moviesAfterCurrentTime.stream().map(
-                movie -> MovieResponseDto.create(movie, playingStatus)
+                movie -> MovieResponseDto.create(movie, PlayingStatusType.IS_PLAYING)
+        ).toList();
+    }
+
+    public List<MovieResponseDto> getMoviesWillPlaying() {
+        List<Movie> openingMoviesAfterCurrentDate = movieRepository.findMoviesOpeningAfterCurrentDate(
+                LocalDate.now());
+        return openingMoviesAfterCurrentDate.stream().map(
+                movie -> MovieResponseDto.create(movie, PlayingStatusType.WILL_PLAYING)
         ).toList();
     }
 

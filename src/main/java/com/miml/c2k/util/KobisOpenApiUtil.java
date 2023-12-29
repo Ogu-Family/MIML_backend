@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -76,7 +78,7 @@ public class KobisOpenApiUtil {
 
     public Movie getMovieInfoByMovieCodeAndSave(String movieCode) {
         String movieInfoBaseUrl = baseUrl + movieInfoUrl;
-        Optional<Movie> movie = movieRepository.findByCode(Long.valueOf(movieCode));
+        Optional<Movie> movie = movieRepository.findByCode(movieCode);
         if (movie.isPresent()) {
             return movie.get();
         } else {
@@ -91,12 +93,12 @@ public class KobisOpenApiUtil {
                 JsonNode rootNode = executeHttpRequestAndGetJsonResponse(requestMovieInfoUri);
 
                 // 데이터 필터링
-                Long code;
-                String title, genre, director, nation;
+                String code, title, genre, director, nation, openDate;
 
                 JsonNode movieInfoJsonNode = rootNode.path("movieInfoResult").path("movieInfo");
-                code = movieInfoJsonNode.path("movieCd").asLong();
+                code = movieInfoJsonNode.path("movieCd").asText();
                 title = movieInfoJsonNode.path("movieNm").asText();
+                openDate = movieInfoJsonNode.path("openDt").asText();
                 JsonNode directorsNode = movieInfoJsonNode.path("directors");
                 director =
                         directorsNode.size() >= 1 ? directorsNode.get(0).path("peopleNm").asText()
@@ -114,6 +116,7 @@ public class KobisOpenApiUtil {
                         .genre(genre)
                         .nation(nation)
                         .code(code)
+                        .openDate(openDate.isBlank() ? null : convertStringToLocalDate(openDate))
                         .build());
             } catch (URISyntaxException e) {
                 e.printStackTrace();
@@ -143,5 +146,10 @@ public class KobisOpenApiUtil {
         JsonNode rootNode = objectMapper.readTree(result.toString());
 
         return rootNode;
+    }
+
+    private LocalDate convertStringToLocalDate(String dateString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return LocalDate.parse(dateString, formatter);
     }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,15 +38,20 @@ public class Movie {
     private Long audienceCount = 0L;
 
     @Column(name = "code", nullable = false, unique = true)
-    private Long code;
+    private String code;
+
+    @Column(name = "open_date")
+    private LocalDate openDate;
 
     @Builder
-    public Movie(String title, String director, String genre, String nation, Long code) {
+    public Movie(String title, String director, String genre, String nation, String code,
+            LocalDate openDate) {
         this.title = title;
         this.director = director;
         this.genre = genre;
         this.nation = nation;
         this.code = code;
+        this.openDate = openDate;
     }
 
     public void updateAudienceCount(Long audienceCount) {
