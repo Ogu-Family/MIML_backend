@@ -85,12 +85,12 @@
   const loadMovies = async () => {
     return await fetch("/api/v1/movies")
     .then(res => res.json())
-    .then(data => {
-      console.log("movies: " + data);
+    .then(res => {
+      console.log("movies: " + res.data);
 
       const movieSelect = document.querySelector("#movieSelect");
 
-      data.forEach(movie => {
+      res.data.forEach(movie => {
         const movieOption = document.createElement("option");
         movieOption.text = movie.title;
         movieOption.value = movie.id;

@@ -3,8 +3,10 @@ package com.miml.c2k.domain.movie.controller;
 import com.miml.c2k.domain.movie.dto.MovieResponseDto;
 import com.miml.c2k.domain.movie.dto.PlayingStatusType;
 import com.miml.c2k.domain.movie.service.MovieService;
+import com.miml.c2k.global.dto.ApiResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +36,9 @@ public class MovieController {
 
     @GetMapping("/api/v1/movies")
     @ResponseBody
-    public List<MovieResponseDto> getMoviesPlayingOnScreen() {
-        return movieService.getMoviesPlayingOnScreen();
+    public ApiResponse<List<MovieResponseDto>> getMoviesPlayingOnScreen() {
+        return ApiResponse.create(HttpStatus.SC_OK,
+            "영화 목록 정상 반환",
+            movieService.getMoviesPlayingOnScreen());
     }
 }
