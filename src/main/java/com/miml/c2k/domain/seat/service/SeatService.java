@@ -1,10 +1,17 @@
 package com.miml.c2k.domain.seat.service;
 
+import com.miml.c2k.domain.member.Member;
+import com.miml.c2k.domain.member.repository.MemberRepository;
+import com.miml.c2k.domain.schedule.Schedule;
+import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.seat.Seat;
 import com.miml.c2k.domain.seat.Seat.SeatNameType;
 import com.miml.c2k.domain.seat.dto.ReservedSeatResponseDto;
+import com.miml.c2k.domain.seat.dto.SeatRequestDto;
 import com.miml.c2k.domain.seat.dto.SeatResponseDto;
 import com.miml.c2k.domain.seat.repository.SeatRepository;
+import com.miml.c2k.domain.ticket.Ticket;
+import com.miml.c2k.domain.ticket.repository.TicketRepository;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +26,9 @@ import org.springframework.stereotype.Service;
 public class SeatService {
 
     private final SeatRepository seatRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final MemberRepository memberRepository;
+    private final TicketRepository ticketRepository;
 
     public List<SeatResponseDto> getAllSeats(Long scheduleId) {
 
@@ -64,5 +74,17 @@ public class SeatService {
                 .toList();
     }
 
+
+    public ReservedSeatResponseDto reserveSeat(SeatRequestDto seatRequestDto) {
+        Schedule schedule = scheduleRepository.findById(seatRequestDto.getScheduleId()).get();
+        Member member = memberRepository.findById(1L).get(); // TODO: 현재 로그인한 회원 정보 가져오기
+        Ticket ticket = ticketRepository.save(Ticket.createWithoutPayment(member, schedule));
+
+        Seat reservedSeat = seatRepository.save(
+                Seat.builder().name(seatRequestDto.getSeatNameType()).screen(schedule.getScreen())
+                        .ticket(ticket).build());
+
+        return ReservedSeatResponseDto.create(reservedSeat, ticket);
+    }
 
 }
