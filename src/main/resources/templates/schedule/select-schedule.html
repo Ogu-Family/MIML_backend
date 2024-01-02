@@ -64,7 +64,7 @@
         scheduleButton.textContent = schedule.screenNum + "관\n" + schedule.startTime + " ~ " + schedule.endTime + "\n" + schedule.availableSeatsCount + "/" + schedule.totalSeatsCount;
         scheduleButton.value = schedule.id;
         scheduleButton.onclick = () => {
-          window.location.href = "/api/v1/seats?schedule_id=" + schedule.id;
+          window.location.href = "/seats?schedule_id=" + schedule.id;
 
         };
 

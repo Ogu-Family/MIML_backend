@@ -20,7 +20,7 @@ public class SeatController {
 
     private final SeatService seatService;
 
-    @GetMapping("/api/v1/seats")
+    @GetMapping("/seats")
     public String getSchedulesBy(
             @RequestParam("schedule_id") Long scheduleId, Model model) {
         model.addAttribute("seats", seatService.getAllSeats(scheduleId));
