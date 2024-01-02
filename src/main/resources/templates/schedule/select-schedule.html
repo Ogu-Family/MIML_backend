@@ -21,6 +21,10 @@
   <div>
     <button type="button" onclick="loadSchedules()">검색</button>
   </div>
+  <div>
+    <p>좌석 선택</p>
+    <button type="button" onclick="reserveSeat()">좌석 예약</button>
+  </div>
   <div id="schedules"></div>
   <div id="toast"></div>
 </body>
@@ -60,7 +64,8 @@
         scheduleButton.textContent = schedule.screenNum + "관\n" + schedule.startTime + " ~ " + schedule.endTime + "\n" + schedule.availableSeatsCount + "/" + schedule.totalSeatsCount;
         scheduleButton.value = schedule.id;
         scheduleButton.onclick = () => {
-          window.location.href = "/seats?scheduleId=" + schedule.id;
+          window.location.href = "/seats?schedule_id=" + schedule.id;
+
         };
 
         schedules.appendChild(scheduleButton);

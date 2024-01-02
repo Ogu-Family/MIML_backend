@@ -11,8 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor
 public class Ticket {
 
     @Id
@@ -24,10 +28,20 @@ public class Ticket {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "screen_id")
+    @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
     @OneToOne
     @JoinColumn(name = "payment_id")
     private Payment payment;
+
+    private Ticket(Member member, Schedule schedule, Payment payment) {
+        this.member = member;
+        this.schedule = schedule;
+        this.payment = payment;
+    }
+
+    public static Ticket createWithoutPayment(Member member, Schedule schedule) {
+        return new Ticket(member, schedule, null);
+    }
 }

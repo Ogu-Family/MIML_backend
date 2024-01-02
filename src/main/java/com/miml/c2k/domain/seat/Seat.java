@@ -4,16 +4,21 @@ import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.ticket.Ticket;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Seat {
 
     @Id
@@ -21,10 +26,9 @@ public class Seat {
     private Long id;
 
     @Column(name = "name", nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private SeatNameType name;
 
-    @Column(name = "is_reserved", nullable = false, columnDefinition = "tinyint default 0")
-    private Boolean isReserved;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "screen_id")
@@ -33,4 +37,15 @@ public class Seat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
+
+    @Builder
+    public Seat(SeatNameType name, Screen screen, Ticket ticket) {
+        this.name = name;
+        this.screen = screen;
+        this.ticket = ticket;
+    }
+
+    public enum SeatNameType {
+        J10, J11, J12, J13, J14, J15, J16, J17, J18, J19
+    }
 }
