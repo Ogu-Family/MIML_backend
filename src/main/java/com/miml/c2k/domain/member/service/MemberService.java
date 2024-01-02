@@ -33,12 +33,7 @@ public class MemberService {
     public MemberResponseDto findMemberByAccessToken(String accessToken) {
         Member member = findMember(accessToken);
 
-        return MemberResponseDto.builder()
-                .nickname(member.getNickname())
-                .email(member.getEmail())
-                .oAuthProvider(member.getOAuthProvider())
-                .createdAt(member.getCreatedAt())
-                .build();
+        return MemberResponseDto.create(member);
     }
 
     @Transactional
@@ -47,12 +42,7 @@ public class MemberService {
 
         member.update(memberUpdateDto.nickname());
 
-        return MemberResponseDto.builder()
-                .nickname(member.getNickname())
-                .email(member.getEmail())
-                .oAuthProvider(member.getOAuthProvider())
-                .createdAt(member.getCreatedAt())
-                .build();
+        return MemberResponseDto.create(member);
     }
 
     private Member findMember(String accessToken) {
