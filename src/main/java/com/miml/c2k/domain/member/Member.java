@@ -43,4 +43,8 @@ public class Member {
         this.oAuthProvider = oAuthProvider;
         this.createdAt = LocalDateTime.now();
     }
+
+    public void update(String nickname) {
+        this.nickname = nickname;
+    }
 }
