@@ -51,7 +51,7 @@
 
     // Deselect the currently selected seat if a different one is clicked
     if (selectedSeatName !== null && selectedSeatName !== seatNameType) {
-      const previousSelectedButton = document.getElementById('seat_' + selectedSeatName);
+      const previousSelectedButton = document.querySelector('[data-seatNameType="' + selectedSeatName + '"]');
       if (previousSelectedButton) {
         previousSelectedButton.classList.remove('selected');
       }
