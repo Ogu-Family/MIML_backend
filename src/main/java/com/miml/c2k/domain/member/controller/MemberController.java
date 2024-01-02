@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,8 +24,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findAllMembers());
     }
 
-    @GetMapping("/api/v1/myPage/{accessToken}")
-    public String myPage(@PathVariable String accessToken, Model model) {
+    @GetMapping("/myPage")
+    public String myPage(@RequestHeader(name = "accessToken") String accessToken, Model model) {
         MemberResponseDto memberResponseDto = memberService.findMemberByAccessToken(accessToken);
 
         model.addAttribute("memberResponseDto", memberResponseDto);
@@ -33,8 +33,8 @@ public class MemberController {
         return "/myPage/myPage";
     }
 
-    @PutMapping("/api/v1/myPage/{accessToken}")
-    public ResponseEntity<MemberResponseDto> update(@PathVariable String accessToken, @RequestBody MemberUpdateDto updateMemberDto) {
+    @PutMapping("/api/v1/myPage") //To Do: 추후에 프론트 뷰 수정해서 리다이렉트 하는 api로 수정
+    public ResponseEntity<MemberResponseDto> update(@RequestHeader(name = "accessToken") String accessToken, @RequestBody MemberUpdateDto updateMemberDto) {
         MemberResponseDto memberResponseDto = memberService.updateMember(accessToken, updateMemberDto);
 
         return ResponseEntity.ok(memberResponseDto);
