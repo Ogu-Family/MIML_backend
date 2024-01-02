@@ -14,7 +14,7 @@ public record TicketInfoResponseDto(String movieTitle,
                                     int screenNum,
                                     long paymentFee) {
 
-    public TicketInfoResponseDto create(Movie movie, Theater theater, Schedule schedule, Screen screen, Payment payment) {
+    public static TicketInfoResponseDto create(Movie movie, Theater theater, Schedule schedule, Screen screen, Payment payment) {
         return new TicketInfoResponseDto(movie.getTitle(),
             movie.getPoster(),
             theater.getName(),
