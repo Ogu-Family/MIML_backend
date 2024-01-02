@@ -2,6 +2,7 @@ package com.miml.c2k.domain.schedule.repository;
 
 import com.miml.c2k.domain.movie.Movie;
 import com.miml.c2k.domain.schedule.Schedule;
+import com.miml.c2k.domain.screen.Screen;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,4 +28,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query(value = "SELECT m FROM Movie m JOIN Schedule s ON m.id = s.movie.id WHERE s.id = :scheduleId")
     Optional<Movie> findMovieByScheduleId(Long scheduleId);
+
+    @Query(value = "SELECT sc FROM Screen sc JOIN Schedule s ON sc.id = s.screen.id")
+    Optional<Screen> findScreenByScheduleId(Long scheduleId);
 }
