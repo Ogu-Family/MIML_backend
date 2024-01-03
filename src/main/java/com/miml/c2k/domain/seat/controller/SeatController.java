@@ -1,5 +1,7 @@
 package com.miml.c2k.domain.seat.controller;
 
+import com.miml.c2k.domain.member.dto.MemberResponseDto;
+import com.miml.c2k.domain.member.service.MemberService;
 import com.miml.c2k.domain.seat.dto.ReservedSeatResponseDto;
 import com.miml.c2k.domain.seat.dto.SeatRequestDto;
 import com.miml.c2k.domain.seat.service.SeatService;
@@ -11,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SeatController {
 
     private final SeatService seatService;
+    private final MemberService memberService;
 
     @GetMapping("/seats")
     public String getSchedulesBy(
@@ -32,8 +36,11 @@ public class SeatController {
     @PostMapping("/api/v1/seats")
     @ResponseBody
     public ApiResponse<ReservedSeatResponseDto> getSchedulesBy(
+            @RequestHeader(name = "accessToken") String accessToken,
             @RequestBody SeatRequestDto seatRequestDto) {
+        MemberResponseDto memberResponseDto = memberService.findMemberByAccessToken(accessToken);
+
         return ApiResponse.create(HttpStatus.SC_OK, "정상 처리",
-                seatService.reserveSeat(seatRequestDto));
+                seatService.reserveSeat(seatRequestDto, memberResponseDto.getId()));
     }
 }
