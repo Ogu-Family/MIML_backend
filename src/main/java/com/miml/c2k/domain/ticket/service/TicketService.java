@@ -33,12 +33,22 @@ public class TicketService {
 
         List<Ticket> tickets = ticketRepository.findAllByMemberId(memberId);
 
-        tickets.parallelStream().forEach(ticket -> {
+        tickets.forEach(ticket -> {
             ticket.changeStatusCorrectly();
             addTicketInfoResponseDtosByTicket(ticket, ticketInfoResponseDtos);
         });
 
         return ticketInfoResponseDtos;
+    }
+
+    @Transactional
+    public void cancelTicket(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(RuntimeException::new); // TODO: 사용자 정의 예외 생성
+
+        ticket.getSeats().forEach(seat -> seatRepository.deleteById(seat.getId()));
+        ticket.getSeats().clear();
+
+        ticket.cancel();
     }
 
     private void addTicketInfoResponseDtosByTicket(Ticket ticket,
