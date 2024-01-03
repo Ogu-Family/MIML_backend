@@ -22,8 +22,10 @@ public class SeatController {
 
     @GetMapping("/seats")
     public String getSchedulesBy(
-            @RequestParam("schedule_id") Long scheduleId, Model model) {
+            @RequestParam("schedule_id") Long scheduleId,
+            @RequestParam("seat_count") Long seatCount, Model model) {
         model.addAttribute("seats", seatService.getAllSeats(scheduleId));
+        model.addAttribute("seat_count", seatCount);
         return "schedule/select-seat";
     }
 
