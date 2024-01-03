@@ -4,7 +4,6 @@ import com.miml.c2k.domain.member.dto.MemberResponseDto;
 import com.miml.c2k.domain.member.dto.MemberUpdateDto;
 import com.miml.c2k.domain.member.service.MemberService;
 import com.miml.c2k.global.dto.ApiResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,8 +20,10 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/api/v1/members")
-    public ApiResponse<List<MemberResponseDto>> findAllMembers() {
-        return ApiResponse.create(HttpStatus.OK.value(), "정상 처리", memberService.findAllMembers());
+    public ApiResponse<MemberResponseDto> findMember(
+            @RequestHeader(name = "accessToken") String accessToken) {
+        return ApiResponse.create(HttpStatus.OK.value(), "정상 처리",
+                memberService.findMemberByAccessToken(accessToken));
     }
 
     @GetMapping("/myPage")
