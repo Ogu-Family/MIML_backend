@@ -4,7 +4,7 @@ import com.miml.c2k.domain.movie.Movie;
 import com.miml.c2k.domain.payment.Payment;
 import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.screen.Screen;
-import com.miml.c2k.domain.seat.Seat;
+import com.miml.c2k.domain.seat.Seat.SeatNameType;
 import com.miml.c2k.domain.theater.Theater;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,16 +14,17 @@ public record TicketInfoResponseDto(String movieTitle,
                                     String theaterName,
                                     LocalDateTime startTime,
                                     int screenNum,
-                                    List<String> seats,
+                                    List<SeatNameType> seatNameTypes,
                                     long paymentFee) {
 
-    public static TicketInfoResponseDto create(Movie movie, Theater theater, Schedule schedule, Screen screen, Payment payment, List<Seat> seats) {
+    public static TicketInfoResponseDto create(Movie movie, Theater theater, Schedule schedule,
+            Screen screen, Payment payment, List<SeatNameType> seatNameTypes) {
         return new TicketInfoResponseDto(movie.getTitle(),
-            movie.getPoster(),
-            theater.getName(),
-            schedule.getStartTime(),
-            screen.getNum(),
-            seats.stream().map(seat -> seat.getName().name()).toList(),
-            payment.getAmount());
+                movie.getPoster(),
+                theater.getName(),
+                schedule.getStartTime(),
+                screen.getNum(),
+                seatNameTypes,
+                payment.getAmount());
     }
 }

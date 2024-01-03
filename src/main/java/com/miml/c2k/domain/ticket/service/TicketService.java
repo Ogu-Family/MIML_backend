@@ -26,11 +26,12 @@ public class TicketService {
 
     public List<TicketInfoResponseDto> getAllTicketsInfoByMemberId(Long memberId) {
         List<TicketInfoResponseDto> ticketInfoResponseDtos = new ArrayList<>();
-
+        // TODO: 결제된 티켓 가져오기
         List<Ticket> tickets = ticketRepository.findAllByMemberId(memberId);
 
         tickets.parallelStream()
-            .forEach(ticket -> addTicketInfoResponseDtosByTicket(ticket, ticketInfoResponseDtos));
+                .forEach(ticket -> addTicketInfoResponseDtosByTicket(ticket,
+                        ticketInfoResponseDtos));
 
         return ticketInfoResponseDtos;
     }
@@ -53,11 +54,12 @@ public class TicketService {
         List<Seat> relatedSeats = ticket.getSeats();
 
         Payment relatedPayment = ticketRepository.findPaymentByTicketId(ticket.getId())
-            .orElseGet(Payment::new);
+                .orElseGet(Payment::new);
 
         TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(relatedMovie,
-            relatedTheater,
-            relatedSchedule, relatedScreen, relatedPayment, relatedSeats);
+                relatedTheater,
+                relatedSchedule, relatedScreen, relatedPayment,
+                relatedSeats.stream().map(Seat::getName).toList());
 
         ticketInfoResponseDtos.add(ticketInfoResponseDto);
     }
