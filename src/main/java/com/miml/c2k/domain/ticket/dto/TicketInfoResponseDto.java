@@ -11,7 +11,8 @@ import com.miml.c2k.domain.ticket.TicketStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record TicketInfoResponseDto(String movieTitle,
+public record TicketInfoResponseDto(Long id,
+                                    String movieTitle,
                                     String poster,
                                     String theaterName,
                                     LocalDateTime startTime,
@@ -21,7 +22,8 @@ public record TicketInfoResponseDto(String movieTitle,
                                     TicketStatus ticketStatus) {
 
     public static TicketInfoResponseDto create(Ticket ticket, Movie movie, Theater theater, Schedule schedule, Screen screen, Payment payment, List<Seat> seats) {
-        return new TicketInfoResponseDto(movie.getTitle(),
+        return new TicketInfoResponseDto(ticket.getId(),
+            movie.getTitle(),
             movie.getPoster(),
             theater.getName(),
             schedule.getStartTime(),
