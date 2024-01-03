@@ -6,7 +6,6 @@ import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.seat.Seat;
-import com.miml.c2k.domain.seat.repository.SeatRepository;
 import com.miml.c2k.domain.theater.Theater;
 import com.miml.c2k.domain.theater.repository.TheaterRepository;
 import com.miml.c2k.domain.ticket.Ticket;
@@ -24,7 +23,6 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final ScheduleRepository scheduleRepository;
     private final TheaterRepository theaterRepository;
-    private final SeatRepository seatRepository;
 
     public List<TicketInfoResponseDto> getAllTicketsInfoByMemberId(Long memberId) {
         List<TicketInfoResponseDto> ticketInfoResponseDtos = new ArrayList<>();
@@ -52,7 +50,7 @@ public class TicketService {
         Theater relatedTheater = theaterRepository.findByScreenId(relatedScreen.getId())
             .orElseThrow(() -> new RuntimeException("연결된 영화관 없음"));// TODO: 사용자 정의 예외 생성
 
-        List<Seat> relatedSeats = seatRepository.findAllByTicketId(ticket.getId());
+        List<Seat> relatedSeats = ticket.getSeats();
 
         Payment relatedPayment = ticketRepository.findPaymentByTicketId(ticket.getId())
             .orElseGet(Payment::new);
