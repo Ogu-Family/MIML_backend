@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Seat Selection</title>
   <style>
-    /* Add styling for selected and reserved seats */
+    /* Add styling for selected and reserved seatNameTypes */
     .selected {
       background-color: lightblue;
     }
@@ -31,66 +31,86 @@
     </button>
   </div>
 </div>
+<label for="accessToken">Access Token:</label>
+<input type="text" id="accessToken" name="accessToken" required>
 <button onclick="reserveSelectedSeats()">좌석 선택 완료</button>
 
 <!-- Result container -->
 <div id="reservationResult">
   <p><strong>좌석 선택 결과:</strong></p>
-  <p><strong>Seat ID:</strong> <span id="seatId"></span></p>
   <p><strong>Ticket ID:</strong> <span id="ticketId"></span></p>
-  <p><strong>Seat Name:</strong> <span id="seatNameType"></span></p>
+  <p><strong>Seat Info:</strong> <span id="seatInfo"></span></p>
 </div>
 
 <script th:inline="javascript">
-  // Variable to store the currently selected seat ID
-  let selectedSeatName = null;
+  // Array to store selected seat names
+  let selectedSeats = [];
 
   // Function to toggle seat selection
   function toggleSeat(button) {
     const seatNameType = button.getAttribute('data-seatNameType');
 
-    // Deselect the currently selected seat if a different one is clicked
-    if (selectedSeatName !== null && selectedSeatName !== seatNameType) {
-      const previousSelectedButton = document.querySelector('[data-seatNameType="' + selectedSeatName + '"]');
-      if (previousSelectedButton) {
-        previousSelectedButton.classList.remove('selected');
-      }
-    }
-
-    if (button.classList.contains('selected')) {
-      // Deselect the seat if it is already selected
-      button.classList.remove('selected');
-      selectedSeatName = null;
-    } else {
-      // Select the seat
-      button.classList.add('selected');
-      selectedSeatName = seatNameType;
-    }
-  }
-
-  // Function to reserve selected seats
-  async function reserveSelectedSeats() {
-    // Check if any seat is selected
-    if (selectedSeatName === null) {
-      alert("Please select a seat before reserving.");
+    if (button.classList.contains('reserved')) {
+      // Ignore reserved seatNameTypes
       return;
     }
 
-    // Get the scheduleId from the URL parameters
+    const index = selectedSeats.indexOf(seatNameType);
+
+    if (index !== -1) {
+      // Deselect the seat if it is already selected
+      button.classList.remove('selected');
+      selectedSeats.splice(index, 1);
+    } else {
+      // Select the seat
+      button.classList.add('selected');
+      selectedSeats.push(seatNameType);
+
+      // Check if the selected seatNameTypes exceed seat_count
+      const urlParams = new URLSearchParams(window.location.search);
+      const seatCount = urlParams.get('seat_count');
+
+      if (selectedSeats.length > parseInt(seatCount)) {
+        // If yes, deselect the first selected seat
+        const firstSelectedButton = document.querySelector('[data-seatNameType="' + selectedSeats[0] + '"]');
+        if (firstSelectedButton) {
+          firstSelectedButton.classList.remove('selected');
+          selectedSeats.shift(); // Remove the first selected seat from the array
+        }
+      }
+    }
+  }
+
+  // Function to reserve selected seatNameTypes
+  async function reserveSelectedSeats() {
+    // Get the scheduleId, seat count from the server response or another source
     const urlParams = new URLSearchParams(window.location.search);
     const scheduleId = urlParams.get('schedule_id');
+    const seatCount = urlParams.get('seat_count');
+    const accessToken = document.getElementById('accessToken').value;
+
+    // Debugging: Log the values for verification
+    console.log('Seat Count:', seatCount);
+    console.log('Selected Seats Count:', selectedSeats.length);
+
+    // Check if the required number of seatNameTypes is selected
+    if (selectedSeats.length !== parseInt(seatCount)) {
+      alert("Please select exactly " + seatCount + " seats before reserving.");
+      return;
+    }
 
     // Prepare the data for the POST request
     const requestData = {
       scheduleId: scheduleId,
-      seatNameType: selectedSeatName,
+      seatNameTypes: selectedSeats,
     };
 
-    // Send a POST request to the server to reserve the seat
+    // Send a POST request to the server to reserve the seatNameTypes
     const response = await fetch('/api/v1/seats', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'accessToken': accessToken, // Include accessToken in the header
       },
       body: JSON.stringify(requestData),
     });
@@ -108,9 +128,16 @@
       resultContainer.style.display = 'block';
 
       // Update the result content
-      document.getElementById('seatId').innerText = responseData.data.seatId;
       document.getElementById('ticketId').innerText = responseData.data.ticketId;
-      document.getElementById('seatNameType').innerText = responseData.data.seatNameType;
+
+      const seatInfosContainer = document.getElementById('seatInfo');
+      seatInfosContainer.innerHTML = ''; // Clear previous content
+
+      responseData.data.seatInfos.forEach(seatInfo => {
+        const seatInfoElement = document.createElement('div');
+        seatInfoElement.innerText = `Seat ID: ${seatInfo.seatId}, Seat Name: ${seatInfo.seatNameType}`;
+        seatInfosContainer.appendChild(seatInfoElement);
+      });
     } else {
       // Hide the result div if data is not available
       resultContainer.style.display = 'none';
