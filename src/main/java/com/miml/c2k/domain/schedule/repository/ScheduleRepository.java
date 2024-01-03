@@ -29,6 +29,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query(value = "SELECT m FROM Movie m JOIN Schedule sch ON m.id = sch.movie.id WHERE sch.id = :scheduleId")
     Optional<Movie> findMovieByScheduleId(Long scheduleId);
 
-    @Query(value = "SELECT scr FROM Screen scr JOIN Schedule sch ON scr.id = sch.screen.id")
+    @Query(value = "SELECT scr FROM Screen scr JOIN Schedule sch ON scr.id = sch.screen.id WHERE sch.id = :scheduleId")
     Optional<Screen> findScreenByScheduleId(Long scheduleId);
 }
