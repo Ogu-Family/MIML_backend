@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TheaterRepository extends JpaRepository<Theater, Long> {
 
-    @Query(value = "SELECT t FROM Theater t JOIN Screen s ON t.id = s.theater.id WHERE s.id = :screenId")
+    @Query(value = "SELECT t FROM Theater t JOIN Screen scr ON t.id = scr.theater.id WHERE scr.id = :screenId")
     Optional<Theater> findByScreenId(Long screenId);
 }

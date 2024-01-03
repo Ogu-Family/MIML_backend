@@ -14,21 +14,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    @Query("SELECT distinct s.movie FROM Schedule s WHERE s.startTime > :currentTime")
+    @Query("SELECT distinct sch.movie FROM Schedule sch WHERE sch.startTime > :currentTime")
     List<Movie> findMoviesStartingAfterCurrentTime(LocalDateTime currentTime);
 
-    @Query("SELECT count(s) FROM Schedule s WHERE (s.screen.id = :screenId) AND ((s.startTime BETWEEN :startTime AND :endTime) OR (s.endTime BETWEEN :startTime AND :endTime))")
+    @Query("SELECT count(sch) FROM Schedule sch WHERE (sch.screen.id = :screenId) AND ((sch.startTime BETWEEN :startTime AND :endTime) OR (sch.endTime BETWEEN :startTime AND :endTime))")
     int countAllByScreenIdBetweenTimeline(Long screenId, LocalDateTime startTime,
             LocalDateTime endTime);
 
-    @Query(value = "SELECT sche FROM Schedule sche "
-        + "JOIN FETCH Screen sc ON sc.id = sche.screen.id "
-        + "WHERE sc.theater.id = :theaterId AND Date(sche.startTime) = :date AND sche.movie.id = :movieId")
+    @Query(value = "SELECT sch FROM Schedule sch "
+        + "JOIN FETCH Screen scr ON scr.id = sch.screen.id "
+        + "WHERE scr.theater.id = :theaterId AND Date(sch.startTime) = :date AND sch.movie.id = :movieId")
     List<Schedule> findAllByMovieIdAndTheaterIdAndDate(Long movieId, Long theaterId, LocalDate date);
 
-    @Query(value = "SELECT m FROM Movie m JOIN Schedule s ON m.id = s.movie.id WHERE s.id = :scheduleId")
+    @Query(value = "SELECT m FROM Movie m JOIN Schedule sch ON m.id = sch.movie.id WHERE sch.id = :scheduleId")
     Optional<Movie> findMovieByScheduleId(Long scheduleId);
 
-    @Query(value = "SELECT sc FROM Screen sc JOIN Schedule s ON sc.id = s.screen.id")
+    @Query(value = "SELECT scr FROM Screen scr JOIN Schedule sch ON scr.id = sch.screen.id")
     Optional<Screen> findScreenByScheduleId(Long scheduleId);
 }
