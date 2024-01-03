@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -51,5 +52,12 @@ public class Ticket {
 
     public static Ticket createWithoutPayment(Member member, Schedule schedule) {
         return new Ticket(member, schedule, null);
+    }
+
+    public void changeStatusCorrectly() {
+        if ((status == TicketStatus.ACTIVE || status == TicketStatus.BEFORE_PAYMENT)
+            && schedule.getStartTime().isBefore(LocalDateTime.now())) {
+            status = TicketStatus.INACTIVE;
+        }
     }
 }

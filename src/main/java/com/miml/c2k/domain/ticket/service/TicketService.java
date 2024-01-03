@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +27,16 @@ public class TicketService {
     private final TheaterRepository theaterRepository;
     private final SeatRepository seatRepository;
 
+    @Transactional
     public List<TicketInfoResponseDto> getAllTicketsInfoByMemberId(Long memberId) {
         List<TicketInfoResponseDto> ticketInfoResponseDtos = new ArrayList<>();
 
         List<Ticket> tickets = ticketRepository.findAllByMemberId(memberId);
 
-        tickets.parallelStream()
-            .forEach(ticket -> addTicketInfoResponseDtosByTicket(ticket, ticketInfoResponseDtos));
+        tickets.parallelStream().forEach(ticket -> {
+            ticket.changeStatusCorrectly();
+            addTicketInfoResponseDtosByTicket(ticket, ticketInfoResponseDtos);
+        });
 
         return ticketInfoResponseDtos;
     }
@@ -57,9 +61,8 @@ public class TicketService {
         Payment relatedPayment = ticketRepository.findPaymentByTicketId(ticket.getId())
             .orElseGet(Payment::new);
 
-        TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(relatedMovie,
-            relatedTheater,
-            relatedSchedule, relatedScreen, relatedPayment, relatedSeats);
+        TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(ticket, relatedMovie,
+            relatedTheater, relatedSchedule, relatedScreen, relatedPayment, relatedSeats);
 
         ticketInfoResponseDtos.add(ticketInfoResponseDto);
     }
