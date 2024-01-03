@@ -33,6 +33,10 @@ public class Member {
     @Column(name = "oAuthProvider")
     private OAuthProvider oAuthProvider;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
+
     @Column(name = "created_at", columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime createdAt;
 
@@ -40,6 +44,7 @@ public class Member {
     public Member(String nickname, OAuthProvider oAuthProvider, String email) {
         this.nickname = nickname;
         this.email = email;
+        this.role = Role.USER; // 가입 시 자동으로 user
         this.oAuthProvider = oAuthProvider;
         this.createdAt = LocalDateTime.now();
     }
