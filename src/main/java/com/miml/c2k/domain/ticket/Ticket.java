@@ -60,4 +60,8 @@ public class Ticket {
             status = TicketStatus.INACTIVE;
         }
     }
+
+    public void cancel() {
+        this.status = TicketStatus.CANCELED;
+    }
 }
