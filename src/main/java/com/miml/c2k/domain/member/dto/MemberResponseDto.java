@@ -26,6 +26,7 @@ public class MemberResponseDto {
 
     public static MemberResponseDto create(Member member) {
         return MemberResponseDto.builder()
+            .id(member.getId())
             .nickname(member.getNickname())
             .email(member.getEmail())
             .oAuthProvider(member.getOAuthProvider())
