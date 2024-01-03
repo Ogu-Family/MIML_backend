@@ -59,6 +59,23 @@
     </div>
   </div>
 </div>
+<div>
+  <div class="container" th:each="ticket : ${ticketInfoResponseDtos}">
+    <img th:src="@{'/' + ${ticket.poster()}}" alt="포스터">
+    <p th:text="${ticket.movieTitle()}"></p>
+    <p th:text="${ticket.screenNum()} + '관'"></p>
+    <p th:text="${ticket.theaterName()}"></p>
+    <p th:text="${#temporals.format(ticket.startTime(), 'yyyy-MM-dd HH:mm')}"></p>
+    <div th:each="seat : ${ticket.seats()}">
+      <span th:text="${seat} + ' '"></span>
+    </div>
+    <p th:text="${ticket.paymentFee()}"></p>
+  </div>
+</div>
+
+<script>
+
+</script>
 
 <!-- Include Bootstrap JS dependencies: jQuery and Popper.js -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
