@@ -6,23 +6,28 @@
   <title>영화 선택 화면</title>
 </head>
 <body>
-  <div>
-    <p>영화 선택</p>
-    <select id="movieSelect" name="movieSelect"></select>
-  </div>
-  <div>
-    <p>영화관 선택</p>
-    <select id="theaterSelect" name="theaterSelect"></select>
-  </div>
-  <div>
-    <p>날짜 선택</p>
-    <input type="date" name="dateSelect" id="dateSelect" required/>
-  </div>
-  <div>
-    <button type="button" onclick="loadSchedules()">검색</button>
-  </div>
-  <div id="schedules"></div>
-  <div id="toast"></div>
+<div>
+  <p>영화 선택</p>
+  <select id="movieSelect" name="movieSelect"></select>
+</div>
+<div>
+  <p>영화관 선택</p>
+  <select id="theaterSelect" name="theaterSelect"></select>
+</div>
+<div>
+  <p>날짜 선택</p>
+  <input type="date" name="dateSelect" id="dateSelect" required/>
+</div>
+<div>
+  <p>인원 수 선택</p>
+  <input type="number" name="seatCount" id="seatCount" min="1" value="1" required/>
+</div>
+<div>
+  <p>상영 일정 검색</p>
+  <button type="button" onclick="loadSchedules()">검색</button>
+</div>
+<div id="schedules"></div>
+<div id="toast"></div>
 </body>
 <script th:inline="javascript">
   document.addEventListener("DOMContentLoaded", () => {
@@ -32,10 +37,13 @@
   })
 
   const loadSchedules = async () => {
-    const [movieSelect, theaterSelector, dateSelect, schedules] = [document.querySelector("#movieSelect"),
+    const [movieSelect, theaterSelector, dateSelect, seatCountInput, schedules] = [
+      document.querySelector("#movieSelect"),
       document.querySelector("#theaterSelect"),
       document.querySelector("#dateSelect"),
-      document.querySelector("#schedules")];
+      document.querySelector("#seatCount"),
+      document.querySelector("#schedules")
+    ];
 
     if (!movieSelect.value || !theaterSelector.value || !dateSelect.value) {
       toastPopUp("모든 값을 입력해 주세요!");
@@ -60,7 +68,8 @@
         scheduleButton.textContent = schedule.screenNum + "관\n" + schedule.startTime + " ~ " + schedule.endTime + "\n" + schedule.availableSeatsCount + "/" + schedule.totalSeatsCount;
         scheduleButton.value = schedule.id;
         scheduleButton.onclick = () => {
-          window.location.href = "/seats?scheduleId=" + schedule.id;
+          const seatCount = seatCountInput.value || 1; // Default to 1 if seatCount is not provided
+          window.location.href = `/seats?schedule_id=${schedule.id}&seat_count=${seatCount}`;
         };
 
         schedules.appendChild(scheduleButton);

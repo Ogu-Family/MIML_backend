@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Seat Selection</title>
+  <style>
+    /* Add styling for selected and reserved seatNameTypes */
+    .selected {
+      background-color: lightblue;
+    }
+    .reserved {
+      background-color: lightcoral;
+    }
+
+    /* Styling for result container */
+    #reservationResult {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<h2>영화 좌석 목록</h2>
+<div id="seatsContainer">
+  <div th:each="seat : ${seats}" class="seat">
+    <button th:attr="data-seatNameType=${seat.seatNameType}" th:class="${seat.reserved} ? 'reserved' : ''" onclick="toggleSeat(this)">
+      <span th:text="${seat.seatNameType}"></span>
+      <span th:if="${seat.reserved}" th:text="' (Reserved)'"></span>
+    </button>
+  </div>
+</div>
+<label for="accessToken">Access Token:</label>
+<input type="text" id="accessToken" name="accessToken" required>
+<button onclick="reserveSelectedSeats()">좌석 선택 완료</button>
+
+<!-- Result container -->
+<div id="reservationResult">
+  <p><strong>좌석 선택 결과:</strong></p>
+  <p><strong>Ticket ID:</strong> <span id="ticketId"></span></p>
+  <p><strong>Seat Info:</strong> <span id="seatInfo"></span></p>
+</div>
+
+<script th:inline="javascript">
+  // Array to store selected seat names
+  let selectedSeats = [];
+
+  // Function to toggle seat selection
+  function toggleSeat(button) {
+    const seatNameType = button.getAttribute('data-seatNameType');
+
+    if (button.classList.contains('reserved')) {
+      // Ignore reserved seatNameTypes
+      return;
+    }
+
+    const index = selectedSeats.indexOf(seatNameType);
+
+    if (index !== -1) {
+      // Deselect the seat if it is already selected
+      button.classList.remove('selected');
+      selectedSeats.splice(index, 1);
+    } else {
+      // Select the seat
+      button.classList.add('selected');
+      selectedSeats.push(seatNameType);
+
+      // Check if the selected seatNameTypes exceed seat_count
+      const urlParams = new URLSearchParams(window.location.search);
+      const seatCount = urlParams.get('seat_count');
+
+      if (selectedSeats.length > parseInt(seatCount)) {
+        // If yes, deselect the first selected seat
+        const firstSelectedButton = document.querySelector('[data-seatNameType="' + selectedSeats[0] + '"]');
+        if (firstSelectedButton) {
+          firstSelectedButton.classList.remove('selected');
+          selectedSeats.shift(); // Remove the first selected seat from the array
+        }
+      }
+    }
+  }
+
+  // Function to reserve selected seatNameTypes
+  async function reserveSelectedSeats() {
+    // Get the scheduleId, seat count from the server response or another source
+    const urlParams = new URLSearchParams(window.location.search);
+    const scheduleId = urlParams.get('schedule_id');
+    const seatCount = urlParams.get('seat_count');
+    const accessToken = document.getElementById('accessToken').value;
+
+    // Debugging: Log the values for verification
+    console.log('Seat Count:', seatCount);
+    console.log('Selected Seats Count:', selectedSeats.length);
+
+    // Check if the required number of seatNameTypes is selected
+    if (selectedSeats.length !== parseInt(seatCount)) {
+      alert("Please select exactly " + seatCount + " seats before reserving.");
+      return;
+    }
+
+    // Prepare the data for the POST request
+    const requestData = {
+      scheduleId: scheduleId,
+      seatNameTypes: selectedSeats,
+    };
+
+    // Send a POST request to the server to reserve the seatNameTypes
+    const response = await fetch('/api/v1/seats', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'accessToken': accessToken, // Include accessToken in the header
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    // Handle the response and display the result
+    const responseData = await response.json();
+    console.log(responseData);
+
+    // Display the result on the page with improved styling
+    const resultContainer = document.getElementById('reservationResult');
+
+    // Check if data is available before showing the result
+    if (responseData.data) {
+      // Show the result div
+      resultContainer.style.display = 'block';
+
+      // Update the result content
+      document.getElementById('ticketId').innerText = responseData.data.ticketId;
+
+      const seatInfosContainer = document.getElementById('seatInfo');
+      seatInfosContainer.innerHTML = ''; // Clear previous content
+
+      responseData.data.seatInfos.forEach(seatInfo => {
+        const seatInfoElement = document.createElement('div');
+        seatInfoElement.innerText = `Seat ID: ${seatInfo.seatId}, Seat Name: ${seatInfo.seatNameType}`;
+        seatInfosContainer.appendChild(seatInfoElement);
+      });
+    } else {
+      // Hide the result div if data is not available
+      resultContainer.style.display = 'none';
+    }
+  }
+</script>
+</body>
+</html>
