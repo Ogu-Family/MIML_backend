@@ -51,5 +51,6 @@ public class Ticket {
 
     public void addSeat(Seat seat) {
         seats.add(seat);
+        seat.setTicket(this);
     }
 }
