@@ -25,6 +25,22 @@
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
     }
 
+    .ticket-active {
+      background-color: #b6fff3;
+    }
+
+    .ticket-inactive {
+      background-color: #c8c8c8;
+    }
+
+    .ticket-before-payment {
+      background-color: #fff09d;
+    }
+
+    .ticket-canceled {
+      background-color: #ff9582;
+    }
+
     h2 {
       color: #007bff; /* Bootstrap primary color */
     }
@@ -60,8 +76,8 @@
   </div>
 </div>
 <div>
-  <div class="container" th:each="ticket : ${ticketInfoResponseDtos}">
-    <img th:src="@{'/' + ${ticket.poster()}}" alt="포스터">
+  <div th:class="${ticket.ticketStatus().getThymeleafClass()}" th:each="ticket : ${ticketInfoResponseDtos}">
+    <img th:src="@{'/' + ${ticket.poster()}}" alt="포스터" width="150">
     <p th:text="${ticket.movieTitle()}"></p>
     <p th:text="${ticket.screenNum()} + '관'"></p>
     <p th:text="${ticket.theaterName()}"></p>
@@ -69,12 +85,20 @@
     <div th:each="seat : ${ticket.seatNameTypes()}">
       <span th:text="${seat} + ' '"></span>
     </div>
-    <p th:text="${ticket.paymentFee()}"></p>
+    <p th:text="${ticket.paymentFee() + ' 원'}"></p>
+    <button th:if="${ticket.ticketStatus()} == ${ticket.ticketStatus().ACTIVE}" th:text="취소" th:onclick="'deleteTicket(' + ${ticket.id()} + ')'"></button>
+    <button th:if="${ticket.ticketStatus()} == ${ticket.ticketStatus().BEFORE_PAYMENT}" th:text="결제하기"></button>
   </div>
 </div>
 
 <script>
+  const deleteTicket = async (ticketId) => {
+    await fetch(`/api/v1/ticket/${ticketId}`, {
+      method: 'DELETE'
+    });
 
+    window.history.go(0);
+  }
 </script>
 
 <!-- Include Bootstrap JS dependencies: jQuery and Popper.js -->

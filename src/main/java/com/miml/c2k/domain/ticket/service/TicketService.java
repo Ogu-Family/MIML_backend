@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,16 +25,28 @@ public class TicketService {
     private final ScheduleRepository scheduleRepository;
     private final TheaterRepository theaterRepository;
 
+    @Transactional
     public List<TicketInfoResponseDto> getAllTicketsInfoByMemberId(Long memberId) {
         List<TicketInfoResponseDto> ticketInfoResponseDtos = new ArrayList<>();
         // TODO: 결제된 티켓 가져오기
         List<Ticket> tickets = ticketRepository.findAllByMemberId(memberId);
 
-        tickets.parallelStream()
-                .forEach(ticket -> addTicketInfoResponseDtosByTicket(ticket,
-                        ticketInfoResponseDtos));
+        tickets.forEach(ticket -> {
+            ticket.changeStatusCorrectly();
+            addTicketInfoResponseDtosByTicket(ticket, ticketInfoResponseDtos);
+        });
 
         return ticketInfoResponseDtos;
+    }
+
+    @Transactional
+    public void cancelTicket(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(RuntimeException::new); // TODO: 사용자 정의 예외 생성
+
+        ticket.getSeats().forEach(seat -> seatRepository.deleteById(seat.getId()));
+        ticket.getSeats().clear();
+
+        ticket.cancel();
     }
 
     private void addTicketInfoResponseDtosByTicket(Ticket ticket,
@@ -56,9 +69,8 @@ public class TicketService {
         Payment relatedPayment = ticketRepository.findPaymentByTicketId(ticket.getId())
                 .orElseGet(Payment::new);
 
-        TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(relatedMovie,
-                relatedTheater,
-                relatedSchedule, relatedScreen, relatedPayment,
+        TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(ticket, relatedMovie,
+                relatedTheater, relatedSchedule, relatedScreen, relatedPayment,
                 relatedSeats.stream().map(Seat::getName).toList());
 
         ticketInfoResponseDtos.add(ticketInfoResponseDto);
