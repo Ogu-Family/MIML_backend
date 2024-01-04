@@ -82,7 +82,7 @@
     <p th:text="${ticket.screenNum()} + '관'"></p>
     <p th:text="${ticket.theaterName()}"></p>
     <p th:text="${#temporals.format(ticket.startTime(), 'yyyy-MM-dd HH:mm')}"></p>
-    <div th:each="seat : ${ticket.seats()}">
+    <div th:each="seat : ${ticket.seatNameTypes()}">
       <span th:text="${seat} + ' '"></span>
     </div>
     <p th:text="${ticket.paymentFee() + ' 원'}"></p>

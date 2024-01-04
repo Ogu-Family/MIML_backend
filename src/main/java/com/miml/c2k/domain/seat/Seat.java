@@ -45,6 +45,10 @@ public class Seat {
         this.ticket = ticket;
     }
 
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
     public enum SeatNameType {
         J10, J11, J12, J13, J14, J15, J16, J17, J18, J19
     }

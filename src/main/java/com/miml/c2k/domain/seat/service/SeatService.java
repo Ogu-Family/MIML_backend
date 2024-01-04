@@ -75,16 +75,24 @@ public class SeatService {
     }
 
 
-    public ReservedSeatResponseDto reserveSeat(SeatRequestDto seatRequestDto) {
-        Schedule schedule = scheduleRepository.findById(seatRequestDto.getScheduleId()).get();
-        Member member = memberRepository.findById(1L).get(); // TODO: 현재 로그인한 회원 정보 가져오기
+    public ReservedSeatResponseDto reserveSeat(SeatRequestDto seatRequestDto, Long memberId) {
+        Schedule schedule = scheduleRepository.findById(seatRequestDto.getScheduleId())
+                .orElseThrow(() -> new RuntimeException("해당 좌석 없음."));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("가입되지 않은 회원"));
         Ticket ticket = ticketRepository.save(Ticket.createWithoutPayment(member, schedule));
 
-        Seat reservedSeat = seatRepository.save(
-                Seat.builder().name(seatRequestDto.getSeatNameType()).screen(schedule.getScreen())
-                        .ticket(ticket).build());
+        List<Seat> reservedSeats = seatRequestDto.getSeatNameTypes().stream()
+                .map(seatNameType -> seatRepository.save(
+                        Seat.builder()
+                                .name(seatNameType)
+                                .screen(schedule.getScreen())
+                                .ticket(ticket)
+                                .build()))
+                .collect(Collectors.toList());
+        reservedSeats.forEach(ticket::addSeat);
 
-        return ReservedSeatResponseDto.create(reservedSeat, ticket);
+        return ReservedSeatResponseDto.create(ticket.getId(), reservedSeats);
     }
 
 }
