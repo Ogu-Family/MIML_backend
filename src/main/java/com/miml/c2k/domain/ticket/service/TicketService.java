@@ -6,6 +6,7 @@ import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.seat.Seat;
+import com.miml.c2k.domain.seat.repository.SeatRepository;
 import com.miml.c2k.domain.theater.Theater;
 import com.miml.c2k.domain.theater.repository.TheaterRepository;
 import com.miml.c2k.domain.ticket.Ticket;
@@ -24,6 +25,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final ScheduleRepository scheduleRepository;
     private final TheaterRepository theaterRepository;
+    private final SeatRepository seatRepository;
 
     @Transactional
     public List<TicketInfoResponseDto> getAllTicketsInfoByMemberId(Long memberId) {
