@@ -37,19 +37,19 @@ public class TicketService {
     }
 
     private void addTicketInfoResponseDtosByTicket(Ticket ticket,
-        List<TicketInfoResponseDto> ticketInfoResponseDtos) {
+            List<TicketInfoResponseDto> ticketInfoResponseDtos) {
         // TODO: 추후 비동기 처리
         Schedule relatedSchedule = ticketRepository.findScheduleByTicketId(ticket.getId())
-            .orElseThrow(() -> new RuntimeException("연결된 상영 일정 없음")); // TODO: 사용자 정의 예외 생성
+                .orElseThrow(() -> new RuntimeException("연결된 상영 일정 없음")); // TODO: 사용자 정의 예외 생성
 
         Movie relatedMovie = scheduleRepository.findMovieByScheduleId(relatedSchedule.getId())
-            .orElseThrow(() -> new RuntimeException("연결된 영화 없음")); // TODO: 사용자 정의 예외 생성
+                .orElseThrow(() -> new RuntimeException("연결된 영화 없음")); // TODO: 사용자 정의 예외 생성
 
         Screen relatedScreen = scheduleRepository.findScreenByScheduleId(relatedSchedule.getId())
-            .orElseThrow(() -> new RuntimeException("연결된 상영관 없음"));// TODO: 사용자 정의 예외 생성
+                .orElseThrow(() -> new RuntimeException("연결된 상영관 없음"));// TODO: 사용자 정의 예외 생성
 
         Theater relatedTheater = theaterRepository.findByScreenId(relatedScreen.getId())
-            .orElseThrow(() -> new RuntimeException("연결된 영화관 없음"));// TODO: 사용자 정의 예외 생성
+                .orElseThrow(() -> new RuntimeException("연결된 영화관 없음"));// TODO: 사용자 정의 예외 생성
 
         List<Seat> relatedSeats = ticket.getSeats();
 
