@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    @Query(value = "SELECT t FROM Ticket t WHERE t.member.id = :memberId")
+    @Query(value = "SELECT t FROM Ticket t JOIN FETCH t.seats s WHERE t.member.id = :memberId")
     List<Ticket> findAllByMemberId(Long memberId);
 
     @Query(value = "SELECT sch FROM Schedule sch JOIN Ticket t ON sch.id = t.schedule.id WHERE t.id = :ticketId")
