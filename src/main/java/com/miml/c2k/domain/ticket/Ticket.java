@@ -55,13 +55,17 @@ public class Ticket {
     }
 
     public void changeStatusCorrectly() {
-        if ((status == TicketStatus.ACTIVE || status == TicketStatus.BEFORE_PAYMENT)
-            && schedule.getStartTime().isBefore(LocalDateTime.now())) {
+        if (isExpired()) {
             status = TicketStatus.INACTIVE;
         }
     }
 
     public void cancel() {
         this.status = TicketStatus.CANCELED;
+    }
+
+    private boolean isExpired() {
+        return (status == TicketStatus.ACTIVE || status == TicketStatus.BEFORE_PAYMENT)
+            && schedule.getStartTime().isBefore(LocalDateTime.now());
     }
 }
