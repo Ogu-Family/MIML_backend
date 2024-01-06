@@ -17,6 +17,6 @@ public class TheaterController {
 
     @GetMapping("/api/v1/theaters")
     public ApiResponse<List<TheaterAdminResponseDto>> getAllTheaters() {
-        return ApiResponse.create(HttpStatus.SC_OK, "영화 목록 정상 반환", theaterService.getAllTheaters());
+        return ApiResponse.create(HttpStatus.SC_OK, "영화관 목록 정상 반환", theaterService.getAllTheaters());
     }
 }
