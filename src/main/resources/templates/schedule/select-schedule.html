@@ -92,7 +92,7 @@
   };
 
   const loadMovies = async () => {
-    return await fetch("/api/v1/movies")
+    return await fetch("/api/v1/movies?playing_status=is_playing")
     .then(res => res.json())
     .then(res => {
       console.log("movies: " + res.data);
