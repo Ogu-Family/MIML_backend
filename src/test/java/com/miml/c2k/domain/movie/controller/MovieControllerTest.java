@@ -3,6 +3,8 @@ package com.miml.c2k.domain.movie.controller;
 import static com.miml.c2k.domain.DataFactoryUtil.createMoviesIsPlaying;
 import static com.miml.c2k.domain.DataFactoryUtil.createMoviesWillPlaying;
 import static com.miml.c2k.domain.DataFactoryUtil.createSchedules;
+import static com.miml.c2k.domain.DataFactoryUtil.createScreens;
+import static com.miml.c2k.domain.DataFactoryUtil.createTheaters;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -20,7 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.miml.c2k.domain.movie.dto.PlayingStatusType;
 import com.miml.c2k.domain.movie.repository.MovieRepository;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
+import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.screen.repository.ScreenRepository;
+import com.miml.c2k.domain.theater.repository.TheaterRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,12 +50,16 @@ class MovieControllerTest {
     private MovieRepository movieRepository;
     @Autowired
     private ScreenRepository screenRepository;
+    @Autowired
+    private TheaterRepository theaterRepository;
 
     @BeforeEach
     void setUp() {
+        Screen screen = screenRepository.saveAll(
+                createScreens(theaterRepository.saveAll(createTheaters()))).get(0);
         scheduleRepository.saveAll(
                 createSchedules(movieRepository.saveAll(createMoviesIsPlaying(1)),
-                        screenRepository.findById(1L).get()));
+                        screen));
         movieRepository.saveAll(createMoviesWillPlaying(1));
     }
 
@@ -59,6 +67,8 @@ class MovieControllerTest {
     void clear() {
         scheduleRepository.deleteAll();
         movieRepository.deleteAll();
+        screenRepository.deleteAll();
+        theaterRepository.deleteAll();
     }
 
     @Test

@@ -9,10 +9,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Screen {
 
     @Id
@@ -28,4 +31,11 @@ public class Screen {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theater_id")
     private Theater theater;
+
+    @Builder
+    public Screen(Integer num, Integer seatCount, Theater theater) {
+        this.num = num;
+        this.seatCount = seatCount;
+        this.theater = theater;
+    }
 }
