@@ -43,7 +43,7 @@ public class MemberController {
         return "/myPage/myPage";
     }
 
-    @PutMapping("/api/v1/myPage") //To Do: 추후에 프론트 뷰 수정해서 리다이렉트 하는 api로 수정
+    @PutMapping("/api/v1/myPage")
     public ApiResponse<MemberResponseDto> update(
             @RequestHeader(name = "accessToken") String accessToken,
             @RequestBody MemberUpdateDto updateMemberDto) {
