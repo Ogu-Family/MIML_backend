@@ -25,7 +25,7 @@ public class SeatController {
     private final MemberService memberService;
 
     @GetMapping("/seats")
-    public String getSchedulesBy(
+    public String getAllSeats(
             @RequestParam("schedule_id") Long scheduleId,
             @RequestParam("seat_count") Long seatCount, Model model) {
         model.addAttribute("seats", seatService.getAllSeats(scheduleId));
@@ -35,12 +35,12 @@ public class SeatController {
 
     @PostMapping("/api/v1/seats")
     @ResponseBody
-    public ApiResponse<ReservedSeatResponseDto> getSchedulesBy(
+    public ApiResponse<ReservedSeatResponseDto> reserveSeats(
             @RequestHeader(name = "accessToken") String accessToken,
             @RequestBody SeatRequestDto seatRequestDto) {
         MemberResponseDto memberResponseDto = memberService.findMemberByAccessToken(accessToken);
 
-        return ApiResponse.create(HttpStatus.SC_OK, "정상 처리",
+        return ApiResponse.create(HttpStatus.SC_OK, "좌석 예매 성공",
                 seatService.reserveSeat(seatRequestDto, memberResponseDto.getId()));
     }
 }
