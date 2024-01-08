@@ -20,6 +20,7 @@ import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -51,15 +52,12 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private final List<Seat> seats = new ArrayList<>();
 
+    @Builder
     private Ticket(Member member, Schedule schedule, Payment payment) {
         this.status = TicketStatus.ACTIVE; // TODO: 결제 구현 후에는, BEFORE_PAYMENT 상태가 기본 값이 되도록 해야 함.
         this.member = member;
         this.schedule = schedule;
         this.payment = payment;
-    }
-
-    public static Ticket createWithoutPayment(Member member, Schedule schedule) {
-        return new Ticket(member, schedule, null);
     }
 
     public void addSeat(Seat seat) {
