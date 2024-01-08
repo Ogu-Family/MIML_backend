@@ -40,7 +40,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class MovieControllerTest {
+class MovieControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
