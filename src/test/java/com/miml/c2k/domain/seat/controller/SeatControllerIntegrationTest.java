@@ -52,7 +52,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class SeatControllerTest {
+class SeatControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
