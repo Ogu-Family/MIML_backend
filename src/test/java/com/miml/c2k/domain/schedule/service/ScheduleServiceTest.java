@@ -69,7 +69,7 @@ class ScheduleServiceTest {
 
     @Test
     @DisplayName("시작 시간이 끝 시간보다 뒤인 모순된 입력에 대해 saveSchedule 메서드가 예외를 발생시킨다.")
-    void fail_save_schedule_given_abnormal_input() {
+    void fail_save_schedule_given_abnormal_timeline_input() {
         LocalDateTime startTime = LocalDateTime.of(2024, 1, 26, 5, 30);
         LocalDateTime endTime = LocalDateTime.of(2024, 1, 1, 5, 30);
 
@@ -77,5 +77,21 @@ class ScheduleServiceTest {
 
         assertThrows(RuntimeException.class,
             () -> scheduleService.saveSchedule(scheduleSavingDto));
+    }
+
+    @Test
+    @DisplayName("상영하려는 시간 대에 해당 상영관에서 이미 상영 중인 영화가 있다면 예외를 발생시킨다.")
+    void fail_save_schedule_given_any_schedules_already_exist_in_timeline() {
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.plusHours(2);
+
+        ScheduleSavingDto scheduleSavingDto = new ScheduleSavingDto(1L, 2L, startTime, endTime);
+
+        when(scheduleRepository.countAllByScreenIdBetweenTimeline(2L, startTime, endTime))
+            .thenReturn(2);
+
+        assertThrows(RuntimeException.class, () -> scheduleService.saveSchedule(scheduleSavingDto));
+
+        verify(scheduleRepository).countAllByScreenIdBetweenTimeline(2L, startTime, endTime);
     }
 }
