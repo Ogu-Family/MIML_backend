@@ -2,10 +2,6 @@ package com.miml.c2k.domain.schedule.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-import com.miml.c2k.domain.schedule.Schedule;
-import com.miml.c2k.domain.screen.Screen;
-import com.miml.c2k.domain.screen.repository.ScreenRepository;
 import com.miml.c2k.domain.movie.Movie;
 import com.miml.c2k.domain.movie.repository.MovieRepository;
 import com.miml.c2k.domain.schedule.Schedule;
