@@ -46,10 +46,12 @@ public class Schedule {
     private Movie movie;
 
     @Builder
-    public Schedule(LocalDateTime startTime, LocalDateTime endTime) {
+    public Schedule(LocalDateTime startTime, LocalDateTime endTime, Screen screen, Movie movie) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.fee = calculateFee();
+        this.screen = screen;
+        this.movie = movie;
     }
 
     public void updateScreen(Screen screen) {
