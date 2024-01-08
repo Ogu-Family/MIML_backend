@@ -83,6 +83,7 @@ class MovieControllerTest {
 
         // then
         perform.andExpect(view().name("member/movie-list"))
+                .andExpect(status().isOk())
                 .andExpect(model().attribute("movies", hasSize(1)))
                 .andExpect(model().attribute("playingStatusTitle",
                         PlayingStatusType.valueOf(playingStatus.toUpperCase()).getName()));
@@ -100,6 +101,7 @@ class MovieControllerTest {
 
         // then
         perform.andExpect(view().name("member/movie-list"))
+                .andExpect(status().isOk())
                 .andExpect(model().attribute("movies", hasSize(1)))
                 .andExpect(model().attribute("playingStatusTitle",
                         PlayingStatusType.valueOf(playingStatus.toUpperCase()).getName()));
