@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.miml.c2k.domain.member.Member;
 import com.miml.c2k.domain.member.repository.MemberRepository;
+import com.miml.c2k.domain.payment.Payment;
 import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.seat.Seat;
@@ -13,6 +14,7 @@ import com.miml.c2k.domain.ticket.Ticket;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +76,7 @@ class TicketRepositoryTest {
     }
 
     @Test
-    void findPaymentByTicketId() {
+    @Disabled // TODO: 결제 구현 후 작성
+    void success_find_payment_by_ticket_id() {
     }
 }
