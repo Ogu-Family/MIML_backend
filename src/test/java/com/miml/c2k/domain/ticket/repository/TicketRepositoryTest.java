@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.miml.c2k.domain.member.Member;
 import com.miml.c2k.domain.member.repository.MemberRepository;
-import com.miml.c2k.domain.payment.Payment;
 import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.seat.Seat;
