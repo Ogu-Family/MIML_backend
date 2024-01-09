@@ -147,4 +147,26 @@ class ScheduleRepositoryTest {
         assertThat(retrievedMovie.get().getId()).isEqualTo(movie.getId());
         assertThat(retrievedMovie.get().getCode()).isEqualTo("1000");
     }
+
+    @Test
+    @DisplayName("특정 상영 일정과 연결된 상영관을 가져온다.")
+    void success_find_a_screen_by_schedule_id() {
+        // given
+        Screen screen = Screen.builder().num(2).seatCount(20).build();
+        Schedule schedule = Schedule.builder().startTime(LocalDateTime.now())
+            .endTime(LocalDateTime.now()).screen(screen).build();
+
+        screenRepository.save(screen);
+        scheduleRepository.save(schedule);
+
+        // when
+        Optional<Screen> retrievedScreen = scheduleRepository.findScreenByScheduleId(
+            schedule.getId());
+
+        // then
+        assertThat(retrievedScreen.isPresent()).isTrue();
+        assertThat(retrievedScreen.get().getId()).isEqualTo(screen.getId());
+        assertThat(retrievedScreen.get().getNum()).isEqualTo(2);
+
+    }
 }
