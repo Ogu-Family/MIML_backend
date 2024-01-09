@@ -4,11 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.miml.c2k.domain.member.Member;
 import com.miml.c2k.domain.member.repository.MemberRepository;
+import com.miml.c2k.domain.schedule.Schedule;
+import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.seat.Seat;
 import com.miml.c2k.domain.seat.Seat.SeatNameType;
 import com.miml.c2k.domain.seat.repository.SeatRepository;
 import com.miml.c2k.domain.ticket.Ticket;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,8 @@ class TicketRepositoryTest {
     private MemberRepository memberRepository;
     @Autowired
     private SeatRepository seatRepository;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
     @Test
     @DisplayName("member id로 특정 회원의 티켓들을 가져온다.")
@@ -49,7 +55,22 @@ class TicketRepositoryTest {
     }
 
     @Test
-    void findScheduleByTicketId() {
+    @DisplayName("특정 티켓과 연결된 상영 일정을 가져온다.")
+    void success_find_a_schedule_by_ticket_id() {
+        // given
+        Schedule schedule = Schedule.builder().startTime(LocalDateTime.now())
+            .endTime(LocalDateTime.now()).build();
+        Ticket ticket = Ticket.builder().schedule(schedule).build();
+
+        scheduleRepository.save(schedule);
+        ticketRepository.save(ticket);
+
+        // when
+        Optional<Schedule> retrievedSchedule = ticketRepository.findScheduleByTicketId(ticket.getId());
+
+        // then
+        assertThat(retrievedSchedule.isPresent()).isTrue();
+        assertThat(retrievedSchedule.get().getId()).isEqualTo(schedule.getId());
     }
 
     @Test
