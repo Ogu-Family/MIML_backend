@@ -1,6 +1,8 @@
 package com.miml.c2k.domain.ticket.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,11 +17,11 @@ import com.miml.c2k.domain.seat.repository.SeatRepository;
 import com.miml.c2k.domain.theater.Theater;
 import com.miml.c2k.domain.theater.repository.TheaterRepository;
 import com.miml.c2k.domain.ticket.Ticket;
+import com.miml.c2k.domain.ticket.TicketStatus;
 import com.miml.c2k.domain.ticket.dto.TicketInfoResponseDto;
 import com.miml.c2k.domain.ticket.repository.TicketRepository;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -101,7 +103,30 @@ class TicketServiceTest {
     }
 
     @Test
-    void success_cancel_ticket_reservation() {
+    @DisplayName("활성화 된 티켓을 취소할 수 있다.")
+    void success_cancel_ticket_reservation() throws Exception{
+        // given
+        Ticket ticket = Ticket.builder().build();
+        Seat seat1 = Seat.builder().name(SeatNameType.J10).build();
+        Seat seat2 = Seat.builder().name(SeatNameType.J11).build();
+
+        ticket.addSeat(seat1);
+        ticket.addSeat(seat2);
+
+        setId(seat1, 1L);
+        setId(seat2, 2L);
+
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        // when
+        ticketService.cancelTicket(1L);
+
+        // then
+        assertThat(ticket.getSeats()).hasSize(0);
+        assertThat(ticket.getStatus()).isEqualTo(TicketStatus.CANCELED);
+
+        verify(seatRepository, times(2)).deleteById(any());
+        verify(ticketRepository).findById(1L);
     }
 
     private void setIdAs1(Object ...obj) throws Exception {
