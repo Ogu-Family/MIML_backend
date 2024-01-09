@@ -23,7 +23,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query(value = "SELECT sch FROM Schedule sch "
         + "JOIN FETCH Screen scr ON scr.id = sch.screen.id "
-        + "WHERE scr.theater.id = :theaterId AND Date(sch.startTime) = :date AND sch.movie.id = :movieId")
+        + "WHERE scr.theater.id = :theaterId AND CAST(sch.startTime as DATE) = :date AND sch.movie.id = :movieId")
     List<Schedule> findAllByMovieIdAndTheaterIdAndDate(Long movieId, Long theaterId, LocalDate date);
 
     @Query(value = "SELECT m FROM Movie m JOIN Schedule sch ON m.id = sch.movie.id WHERE sch.id = :scheduleId")

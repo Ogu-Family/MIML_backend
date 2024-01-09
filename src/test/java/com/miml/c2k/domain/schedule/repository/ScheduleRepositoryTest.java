@@ -1,10 +1,10 @@
 package com.miml.c2k.domain.schedule.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static com.miml.c2k.domain.DataFactoryUtil.createMoviesIsPlaying;
 import static com.miml.c2k.domain.DataFactoryUtil.createSchedules;
 import static com.miml.c2k.domain.DataFactoryUtil.createScreens;
 import static com.miml.c2k.domain.DataFactoryUtil.createTheaters;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,7 +65,10 @@ class ScheduleRepositoryTest {
         Schedule schedule3 = Schedule.builder().startTime(startTime).endTime(endTime)
             .movie(movie).screen(screen3)
             .build();
-        scheduleRepository.saveAll(List.of(schedule1, schedule2, schedule3));
+        Schedule schedule4 = Schedule.builder().startTime(startTime.plusDays(1)).endTime(endTime.plusDays(1))
+            .movie(movie).screen(screen1)
+            .build();
+        scheduleRepository.saveAll(List.of(schedule1, schedule2, schedule3, schedule4));
 
         List<Schedule> retrievedSchedules = scheduleRepository.findAllByMovieIdAndTheaterIdAndDate(
             movie.getId(), theater1.getId(), startTime.toLocalDate());
@@ -99,8 +102,9 @@ class ScheduleRepositoryTest {
         assertThat(scheduleCountBetween23To24).isEqualTo(1);
     }
 
+    @Test
     @DisplayName("현재 상영하고 있는 영화 목록을 가져온다.")
-    void success_findMoviesStartingAfterCurrentTime() {
+    void success_find_movies_starting_after_current_time() {
         // given
         Screen screen = screenRepository.saveAll(
                 createScreens(theaterRepository.saveAll(createTheaters()))).get(0);
