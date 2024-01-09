@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class MemberController {
     private final MemberService memberService;
     private final TicketService ticketService;
 
+    @ResponseBody
     @GetMapping("/api/v1/members")
     public ApiResponse<MemberResponseDto> findMember(
             @RequestHeader(name = "accessToken") String accessToken) {
@@ -43,6 +45,7 @@ public class MemberController {
         return "/myPage/myPage";
     }
 
+    @ResponseBody
     @PutMapping("/api/v1/myPage")
     public ApiResponse<MemberResponseDto> update(
             @RequestHeader(name = "accessToken") String accessToken,
