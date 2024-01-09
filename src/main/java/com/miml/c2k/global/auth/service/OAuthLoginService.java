@@ -1,4 +1,4 @@
-package com.miml.c2k.global.auth;
+package com.miml.c2k.global.auth.service;
 
 import com.miml.c2k.domain.member.Member;
 import com.miml.c2k.domain.member.repository.MemberRepository;

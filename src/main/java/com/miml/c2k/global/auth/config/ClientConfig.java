@@ -1,4 +1,4 @@
-package com.miml.c2k.global.auth;
+package com.miml.c2k.global.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
