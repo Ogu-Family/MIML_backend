@@ -5,7 +5,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.miml.c2k.domain.ticket.service.TicketService;
-import com.miml.c2k.global.auth.SecurityConfig;
+import com.miml.c2k.global.auth.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
