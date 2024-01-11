@@ -1,6 +1,7 @@
 package com.miml.c2k.domain;
 
 import com.miml.c2k.domain.member.Member;
+import com.miml.c2k.domain.member.OAuthProvider;
 import com.miml.c2k.domain.movie.Movie;
 import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.screen.Screen;
@@ -63,6 +64,7 @@ public class DataFactoryUtil {
         return Member.builder()
                 .email("test@case.com")
                 .nickname("testNickName")
+                .oAuthProvider(OAuthProvider.KAKAO)
                 .build();
     }
 
