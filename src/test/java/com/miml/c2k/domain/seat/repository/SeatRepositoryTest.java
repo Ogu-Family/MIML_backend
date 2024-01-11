@@ -55,10 +55,10 @@ class SeatRepositoryTest {
         Schedule schedule = scheduleRepository.saveAll(
                 createSchedules(movieRepository.saveAll(createMoviesIsPlaying(1)), screen)).get(0);
         Member member = memberRepository.save(createMember());
-        Ticket ticket = ticketRepository.save(Ticket.createWithoutPayment(member, schedule));
-        List<Seat> seatsToReserve = createReservedSeats(
-                ticket,
+        Ticket ticket = ticketRepository.save(Ticket.builder().member(member).schedule(schedule).build());
+        List<Seat> seatsToReserve = createReservedSeats(ticket,
                 Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());
+      
         seatRepository.saveAll(seatsToReserve);
 
         // when
@@ -67,5 +67,35 @@ class SeatRepositoryTest {
 
         // then
         assertThat(reservedSeats, equalTo(seatsToReserve));
+    }
+  
+    @Test
+    @DisplayName("상영 일자 id를 이용해 해당 상영 일정의 예약된 좌석 수를 가져온다.")
+    void success_count_reserved_seats_by_schedule_id() {
+        // given
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.plusHours(2);
+
+        Schedule savedSchedule = scheduleRepository.save(
+            Schedule.builder().startTime(startTime).endTime(endTime).build());
+
+        Ticket ticket1 = Ticket.builder().schedule(savedSchedule).build();
+        Ticket ticket2 = Ticket.builder().schedule(savedSchedule).build();
+
+        Seat seat1 = Seat.builder().name(SeatNameType.J10).build();
+        Seat seat2 = Seat.builder().name(SeatNameType.J11).build();
+        Seat seat3 = Seat.builder().name(SeatNameType.J12).build();
+
+        ticket1.addSeat(seat1);
+        ticket1.addSeat(seat2);
+        ticket2.addSeat(seat3);
+
+        ticketRepository.saveAll(List.of(ticket1, ticket2));
+
+        // when
+        int reservedSeatCount = seatRepository.countReservedSeatsByScheduleId(savedSchedule.getId());
+
+        // then
+        assertThat(reservedSeatCount).isEqualTo(3);
     }
 }
