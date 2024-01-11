@@ -18,6 +18,7 @@ import com.miml.c2k.domain.theater.Theater;
 import com.miml.c2k.domain.theater.repository.TheaterRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,4 +127,46 @@ class ScheduleRepositoryTest {
                 });
     }
 
+    @Test
+    @DisplayName("특정 상영 일정과 연결된 영화를 가져온다.")
+    void success_find_a_movie_by_schedule_id() {
+        // given
+        Movie movie = Movie.builder().code("1000").audienceCount(100L).title("title").build();
+        Schedule schedule = Schedule.builder().startTime(LocalDateTime.now())
+            .endTime(LocalDateTime.now()).movie(movie).build();
+
+        movieRepository.save(movie);
+        scheduleRepository.save(schedule);
+
+        // when
+        Optional<Movie> retrievedMovie = scheduleRepository.findMovieByScheduleId(
+            schedule.getId());
+
+        // then
+        assertThat(retrievedMovie.isPresent()).isTrue();
+        assertThat(retrievedMovie.get().getId()).isEqualTo(movie.getId());
+        assertThat(retrievedMovie.get().getCode()).isEqualTo("1000");
+    }
+
+    @Test
+    @DisplayName("특정 상영 일정과 연결된 상영관을 가져온다.")
+    void success_find_a_screen_by_schedule_id() {
+        // given
+        Screen screen = Screen.builder().num(2).seatCount(20).build();
+        Schedule schedule = Schedule.builder().startTime(LocalDateTime.now())
+            .endTime(LocalDateTime.now()).screen(screen).build();
+
+        screenRepository.save(screen);
+        scheduleRepository.save(schedule);
+
+        // when
+        Optional<Screen> retrievedScreen = scheduleRepository.findScreenByScheduleId(
+            schedule.getId());
+
+        // then
+        assertThat(retrievedScreen.isPresent()).isTrue();
+        assertThat(retrievedScreen.get().getId()).isEqualTo(screen.getId());
+        assertThat(retrievedScreen.get().getNum()).isEqualTo(2);
+
+    }
 }
