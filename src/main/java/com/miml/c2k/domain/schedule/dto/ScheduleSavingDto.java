@@ -21,6 +21,9 @@ public class ScheduleSavingDto {
     }
 
     public Schedule toEntity() {
-        return new Schedule(startTime, endTime);
+        return Schedule.builder().
+            startTime(startTime).
+            endTime(endTime)
+            .build();
     }
 }

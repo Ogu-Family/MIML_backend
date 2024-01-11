@@ -45,7 +45,7 @@
       document.querySelector("#schedules")
     ];
 
-    if (!movieSelect.value || !theaterSelector.value || !dateSelect.value) {
+    if (!movieSelect.value || !theaterSelector.value || !dateSelect.value || !seatCountInput.value) {
       toastPopUp("모든 값을 입력해 주세요!");
       return;
     }
@@ -92,7 +92,7 @@
   };
 
   const loadMovies = async () => {
-    return await fetch("/api/v1/movies")
+    return await fetch("/api/v1/movies?playing_status=is_playing")
     .then(res => res.json())
     .then(res => {
       console.log("movies: " + res.data);
@@ -112,10 +112,10 @@
   const loadTheaters = async () => {
     return await fetch("/api/v1/theaters")
     .then(res => { return res.json(); })
-    .then(data => {
-      console.log(data);
+    .then(res => {
+      console.log(res.data);
 
-      data.forEach(theater => {
+      res.data.forEach(theater => {
         const theaterOption = document.createElement("option");
 
         theaterOption.value = theater.id;

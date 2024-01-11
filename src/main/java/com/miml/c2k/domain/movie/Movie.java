@@ -35,7 +35,7 @@ public class Movie {
     private String poster;
 
     @Column(name = "audience_count", nullable = false, columnDefinition = "int default 0")
-    private Long audienceCount = 0L;
+    private long audienceCount = 0L;
 
     @Column(name = "code", nullable = false, unique = true)
     private String code;
@@ -44,12 +44,13 @@ public class Movie {
     private LocalDate openDate;
 
     @Builder
-    public Movie(String title, String director, String genre, String nation, String code,
+    public Movie(String title, String director, String genre, String nation, long audienceCount, String code,
             LocalDate openDate) {
         this.title = title;
         this.director = director;
         this.genre = genre;
         this.nation = nation;
+        this.audienceCount = audienceCount;
         this.code = code;
         this.openDate = openDate;
     }

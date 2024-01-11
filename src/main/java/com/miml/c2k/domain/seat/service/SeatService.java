@@ -80,7 +80,7 @@ public class SeatService {
                 .orElseThrow(() -> new RuntimeException("해당 좌석 없음."));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("가입되지 않은 회원"));
-        Ticket ticket = ticketRepository.save(Ticket.createWithoutPayment(member, schedule));
+        Ticket ticket = ticketRepository.save(Ticket.builder().member(member).schedule(schedule).build());
 
         List<Seat> reservedSeats = seatRequestDto.getSeatNameTypes().stream()
                 .map(seatNameType -> seatRepository.save(
