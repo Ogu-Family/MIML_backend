@@ -59,7 +59,7 @@ class SeatServiceTest {
         Schedule schedule = createSchedules(
                 createMoviesIsPlaying(1),
                 screen).get(0);
-        Ticket ticket = Ticket.createWithoutPayment(createMember(), schedule);
+        Ticket ticket = Ticket.builder().member(createMember()).schedule(schedule).build();
         List<Seat> reservedSeats = createReservedSeats(
                 ticket,
                 Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());
@@ -83,7 +83,7 @@ class SeatServiceTest {
         Schedule schedule = createSchedules(
                 createMoviesIsPlaying(1),
                 screen).get(0);
-        Ticket ticket = Ticket.createWithoutPayment(createMember(), schedule);
+        Ticket ticket = Ticket.builder().member(createMember()).schedule(schedule).build();
         List<Seat> reservedSeats = createReservedSeats(
                 ticket,
                 Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());
@@ -120,7 +120,7 @@ class SeatServiceTest {
                 createMoviesIsPlaying(1),
                 screen).get(0);
         SeatNameType alreadyReservedSeat = SeatNameType.J11;
-        Ticket ticket = Ticket.createWithoutPayment(createMember(), schedule);
+        Ticket ticket = Ticket.builder().member(createMember()).schedule(schedule).build();
         List<Seat> reservedSeats = createReservedSeats(
                 ticket,
                 Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());

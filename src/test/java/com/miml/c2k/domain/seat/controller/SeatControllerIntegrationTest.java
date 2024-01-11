@@ -73,12 +73,14 @@ class SeatControllerIntegrationTest {
     @Autowired
     private AuthTokensGenerator authTokensGenerator;
 
+    private Long scheduleIdForTest;
+
     @BeforeEach
     void setUp() {
         Screen screen = screenRepository.saveAll(
                 createScreens(theaterRepository.saveAll(createTheaters()))).get(0);
-        scheduleRepository.saveAll(
-                createSchedules(movieRepository.saveAll(createMoviesIsPlaying(1)), screen)).get(0);
+        scheduleIdForTest = scheduleRepository.saveAll(
+                createSchedules(movieRepository.saveAll(createMoviesIsPlaying(1)), screen)).get(0).getId();
     }
 
     @AfterEach
@@ -96,7 +98,7 @@ class SeatControllerIntegrationTest {
     @DisplayName("상영 일정에 대한 좌석 목록 뷰를 요청한다.")
     void success_getAllSeatsView() throws Exception {
         // given
-        Schedule schedule = scheduleRepository.findById(1L).get();
+        Schedule schedule = scheduleRepository.findById(scheduleIdForTest).get();
         Long seatCountToReserve = 3L;
 
         // when

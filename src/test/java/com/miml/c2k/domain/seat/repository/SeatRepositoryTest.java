@@ -21,6 +21,7 @@ import com.miml.c2k.domain.seat.Seat.SeatNameType;
 import com.miml.c2k.domain.theater.repository.TheaterRepository;
 import com.miml.c2k.domain.ticket.Ticket;
 import com.miml.c2k.domain.ticket.repository.TicketRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -96,6 +97,6 @@ class SeatRepositoryTest {
         int reservedSeatCount = seatRepository.countReservedSeatsByScheduleId(savedSchedule.getId());
 
         // then
-        assertThat(reservedSeatCount).isEqualTo(3);
+        assertThat(reservedSeatCount, equalTo(3));
     }
 }
