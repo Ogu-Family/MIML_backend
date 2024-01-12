@@ -15,4 +15,5 @@ public record MemberUpdateDto(String nickname) {
             throw new IllegalArgumentException("닉네임은 한글과 영어로만 이루어져야 합니다.");
         }
     }
+
 }
