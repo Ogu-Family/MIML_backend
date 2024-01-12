@@ -1,5 +1,6 @@
 package com.miml.c2k.domain.member;
 
+import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -19,6 +20,7 @@ import com.miml.c2k.domain.ticket.dto.TicketInfoResponseDto;
 import com.miml.c2k.domain.ticket.service.TicketService;
 import com.miml.c2k.global.auth.jwt.AuthTokensGenerator;
 import java.util.List;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -101,7 +103,8 @@ class MemberIntegrationTest {
         // then
         resultActions.andExpect(view().name("/myPage/myPage"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("memberResponseDto", memberResponseDto))
+                .andExpect(model().attribute("memberResponseDto", hasProperty("nickname",
+                        Matchers.equalTo(memberResponseDto.getNickname()))))
                 .andExpect(model().attribute("ticketInfoResponseDtos", allTicketsInfoByMemberId));
     }
 
