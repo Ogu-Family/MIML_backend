@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.miml.c2k.domain.movie.Movie;
-import com.miml.c2k.domain.payment.Payment;
 import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.screen.Screen;
@@ -55,9 +54,9 @@ class TicketServiceTest {
         Movie movie = Movie.builder().title("movie").audienceCount(100L).code("1004").build();
         Theater theater = Theater.builder().name("theater").build();
         Screen screen = Screen.builder().num(2).seatCount(20).theater(
-            theater).build();
+                theater).build();
         Schedule schedule = Schedule.builder().startTime(LocalDateTime.now())
-            .endTime(LocalDateTime.now().plusHours(1)).movie(movie).screen(screen).build();
+                .endTime(LocalDateTime.now().plusHours(1)).movie(movie).screen(screen).build();
         Ticket ticket = Ticket.builder().schedule(schedule).build();
         Seat seat = Seat.builder().name(SeatNameType.J10).screen(screen).build();
 
@@ -65,22 +64,12 @@ class TicketServiceTest {
 
         ticket.addSeat(seat);
 
-        when(ticketRepository.findAllByMemberId(testMemberId))
-            .thenReturn(List.of(ticket));
-        when(ticketRepository.findScheduleByTicketId(ticket.getId()))
-            .thenReturn(Optional.of(schedule));
-        when(scheduleRepository.findMovieByScheduleId(schedule.getId()))
-            .thenReturn(Optional.of(movie));
-        when(scheduleRepository.findScreenByScheduleId(schedule.getId()))
-            .thenReturn(Optional.of(screen));
-        when(theaterRepository.findByScreenId(screen.getId()))
-            .thenReturn(Optional.of(theater));
-        when(ticketRepository.findPaymentByTicketId(ticket.getId()))
-            .thenReturn(Optional.of(new Payment()));
+        when(ticketRepository.findAllByMemberIdWithFetchJoin(testMemberId))
+                .thenReturn(List.of(ticket));
 
         // when
-        List<TicketInfoResponseDto> ticketInfoResponseDtos = ticketService.getAllTicketsInfoByMemberId(
-            testMemberId);
+        List<TicketInfoResponseDto> ticketInfoResponseDtos = ticketService.getAllTicketsInfoByMemberIdWithFetchJoin(
+                testMemberId);
 
         // then
         assertThat(ticketInfoResponseDtos).hasSize(1);
@@ -90,21 +79,17 @@ class TicketServiceTest {
         assertThat(ticketInfoResponseDtos.get(0).theaterName()).isEqualTo(theater.getName());
         assertThat(ticketInfoResponseDtos.get(0).startTime()).isEqualTo(schedule.getStartTime());
         assertThat(ticketInfoResponseDtos.get(0).screenNum()).isEqualTo(screen.getNum());
-        assertThat(ticketInfoResponseDtos.get(0).seatNameTypes().get(0)).isEqualTo(SeatNameType.J10);
+        assertThat(ticketInfoResponseDtos.get(0).seatNameTypes().get(0)).isEqualTo(
+                SeatNameType.J10);
         assertThat(ticketInfoResponseDtos.get(0).paymentFee()).isEqualTo(0);
         assertThat(ticketInfoResponseDtos.get(0).ticketStatus()).isEqualTo(ticket.getStatus());
 
-        verify(ticketRepository).findAllByMemberId(testMemberId);
-        verify(ticketRepository).findScheduleByTicketId(testMemberId);
-        verify(ticketRepository).findPaymentByTicketId(1L);
-        verify(scheduleRepository).findMovieByScheduleId(1L);
-        verify(scheduleRepository).findScreenByScheduleId(1L);
-        verify(theaterRepository).findByScreenId(1L);
+        verify(ticketRepository).findAllByMemberIdWithFetchJoin(testMemberId);
     }
 
     @Test
     @DisplayName("활성화 된 티켓을 취소할 수 있다.")
-    void success_cancel_ticket_reservation() throws Exception{
+    void success_cancel_ticket_reservation() throws Exception {
         // given
         Ticket ticket = Ticket.builder().build();
         Seat seat1 = Seat.builder().name(SeatNameType.J10).build();
@@ -129,7 +114,7 @@ class TicketServiceTest {
         verify(ticketRepository).findById(1L);
     }
 
-    private void setIdAs1(Object ...obj) throws Exception {
+    private void setIdAs1(Object... obj) throws Exception {
         for (Object o : obj) {
             setId(o, 1L);
         }

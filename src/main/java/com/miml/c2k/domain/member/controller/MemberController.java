@@ -34,7 +34,7 @@ public class MemberController {
     public String showMyPage(@RequestHeader(name = "accessToken") String accessToken, Model model) {
         MemberResponseDto memberResponseDto = memberService.findMemberByAccessToken(accessToken);
 
-        List<TicketInfoResponseDto> ticketInfoResponseDtos = ticketService.getAllTicketsInfoByMemberId(
+        List<TicketInfoResponseDto> ticketInfoResponseDtos = ticketService.getAllTicketsInfoByMemberIdWithFetchJoinAndAsync(
             memberResponseDto.getId());
 
         model.addAttribute("memberResponseDto", memberResponseDto);
