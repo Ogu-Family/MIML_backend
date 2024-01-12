@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.miml.c2k.domain.theater.Theater;
 import com.miml.c2k.domain.theater.dto.TheaterAdminResponseDto;
 import com.miml.c2k.domain.theater.service.TheaterService;
-import com.miml.c2k.global.auth.SecurityConfig;
+import com.miml.c2k.global.auth.config.SecurityConfig;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

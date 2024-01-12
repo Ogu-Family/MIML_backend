@@ -12,7 +12,7 @@ import com.miml.c2k.domain.admin.dto.MovieAdminResponseDto;
 import com.miml.c2k.domain.movie.Movie;
 import com.miml.c2k.domain.movie.service.MovieService;
 import com.miml.c2k.domain.schedule.service.ScheduleService;
-import com.miml.c2k.global.auth.SecurityConfig;
+import com.miml.c2k.global.auth.config.SecurityConfig;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
