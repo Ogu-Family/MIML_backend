@@ -18,7 +18,7 @@ public class MemberResponseDto {
     private final LocalDateTime createdAt;
 
     @Builder
-    public MemberResponseDto(Long id, String nickname, String email, OAuthProvider oAuthProvider, Role role, LocalDateTime createdAt) {
+    private MemberResponseDto(Long id, String nickname, String email, OAuthProvider oAuthProvider, Role role, LocalDateTime createdAt) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;

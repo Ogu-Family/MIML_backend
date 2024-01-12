@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,7 +23,6 @@ public class MemberController {
     private final MemberService memberService;
     private final TicketService ticketService;
 
-    @ResponseBody
     @GetMapping("/api/v1/members")
     public ApiResponse<MemberResponseDto> findMember(
             @RequestHeader(name = "accessToken") String accessToken) {
@@ -45,8 +43,7 @@ public class MemberController {
         return "/myPage/myPage";
     }
 
-    @ResponseBody
-    @PutMapping("/api/v1/myPage")
+    @PutMapping("/api/v1/myPage") //To Do: 추후에 프론트 뷰 수정해서 리다이렉트 하는 api로 수정
     public ApiResponse<MemberResponseDto> update(
             @RequestHeader(name = "accessToken") String accessToken,
             @RequestBody MemberUpdateDto updateMemberDto) {

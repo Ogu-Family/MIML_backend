@@ -1,4 +1,4 @@
-package com.miml.c2k.global.auth.service;
+package com.miml.c2k.global.auth;
 
 import com.miml.c2k.domain.member.OAuthProvider;
 import com.miml.c2k.global.auth.platform.OAuthApiClient;

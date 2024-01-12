@@ -1,4 +1,4 @@
-package com.miml.c2k.global.auth.config;
+package com.miml.c2k.global.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

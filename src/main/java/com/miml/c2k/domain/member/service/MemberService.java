@@ -47,6 +47,6 @@ public class MemberService {
 
     private Member findMember(String accessToken) {
         return memberRepository.findById(authTokensGenerator.extractMemberId(accessToken))
-                .orElseThrow(() -> new EntityNotFoundException("찾지 못함"));
+                .orElseThrow(() -> new EntityNotFoundException("찾지 못함")); //To DO: 커스텀화
     }
 }

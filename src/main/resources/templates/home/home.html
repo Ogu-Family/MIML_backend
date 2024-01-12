@@ -16,7 +16,7 @@
 </div>
 
 <script>
-  function moveAdmin() {
+  function admin() {
     $.ajax({
       url: '/admin/movies/insert',
       type: 'GET',
@@ -29,7 +29,7 @@
     });
   }
 
-  function moveUser() {
+  function user() {
     const accessToken = $("#accessToken").val();
 
     $.ajax({
