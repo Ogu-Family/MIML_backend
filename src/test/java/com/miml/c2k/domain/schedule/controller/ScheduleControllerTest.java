@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.miml.c2k.domain.schedule.dto.ScheduleViewResponseDto;
 import com.miml.c2k.domain.schedule.service.ScheduleService;
-import com.miml.c2k.global.auth.SecurityConfig;
+import com.miml.c2k.global.auth.config.SecurityConfig;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,9 @@
-package com.miml.c2k.global.auth;
+package com.miml.c2k.global.auth.controller;
 
 import com.miml.c2k.domain.member.Role;
 import com.miml.c2k.domain.member.controller.MemberController;
 import com.miml.c2k.domain.member.dto.MemberResponseDto;
+import com.miml.c2k.global.auth.service.OAuthLoginService;
 import com.miml.c2k.global.auth.jwt.AuthTokens;
 import com.miml.c2k.global.auth.platform.OAuthLoginParams;
 import com.miml.c2k.global.auth.platform.kakao.KakaoLoginParams;
