@@ -29,12 +29,14 @@ import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.screen.repository.ScreenRepository;
+import com.miml.c2k.domain.seat.Seat;
 import com.miml.c2k.domain.seat.Seat.SeatNameType;
 import com.miml.c2k.domain.seat.dto.SeatRequestDto;
 import com.miml.c2k.domain.seat.repository.SeatRepository;
 import com.miml.c2k.domain.theater.repository.TheaterRepository;
 import com.miml.c2k.domain.ticket.repository.TicketRepository;
 import com.miml.c2k.global.auth.jwt.AuthTokensGenerator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
@@ -79,8 +81,11 @@ class SeatControllerIntegrationTest {
     void setUp() {
         Screen screen = screenRepository.saveAll(
                 createScreens(theaterRepository.saveAll(createTheaters()))).get(0);
-        scheduleIdForTest = scheduleRepository.saveAll(
-                createSchedules(movieRepository.saveAll(createMoviesIsPlaying(1)), screen)).get(0).getId();
+        Schedule schedule = scheduleRepository.saveAll(
+            createSchedules(movieRepository.saveAll(createMoviesIsPlaying(1)), screen)).get(0);
+        scheduleIdForTest = schedule.getId();
+        Arrays.stream(SeatNameType.values()).forEach(seatNameType ->
+            seatRepository.save(Seat.builder().name(seatNameType).schedule(schedule).screen(screen).build()));
     }
 
     @AfterEach

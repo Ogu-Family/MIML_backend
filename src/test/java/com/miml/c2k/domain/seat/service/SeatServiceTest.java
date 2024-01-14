@@ -61,7 +61,7 @@ class SeatServiceTest {
                 screen).get(0);
         Ticket ticket = Ticket.builder().member(createMember()).schedule(schedule).build();
         List<Seat> reservedSeats = createReservedSeats(
-                ticket,
+                ticket, schedule,
                 Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());
         when(seatRepository.findAllReservedSeatsByScheduleId(schedule.getId())).thenReturn(
                 reservedSeats);
