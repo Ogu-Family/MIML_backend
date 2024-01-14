@@ -8,9 +8,12 @@ import com.miml.c2k.domain.schedule.dto.ScheduleViewResponseDto;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.screen.repository.ScreenRepository;
+import com.miml.c2k.domain.seat.Seat;
+import com.miml.c2k.domain.seat.Seat.SeatNameType;
 import com.miml.c2k.domain.seat.repository.SeatRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,8 @@ public class ScheduleService {
         schedule.updateMovie(movie);
         schedule.updateScreen(screen);
 
+        Arrays.stream(SeatNameType.values()).forEach(seatNameType ->
+            seatRepository.save(Seat.builder().name(seatNameType).schedule(schedule).screen(screen).build()));
         scheduleRepository.save(schedule);
     }
 
