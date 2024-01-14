@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class ScheduleService {
     private final ScreenRepository screenRepository;
     private final SeatRepository seatRepository;
 
+    @Transactional
     public void saveSchedule(ScheduleSavingDto scheduleSavingDto) {
         validateNewSchedule(scheduleSavingDto);
 
@@ -39,11 +41,13 @@ public class ScheduleService {
         schedule.updateMovie(movie);
         schedule.updateScreen(screen);
 
+        scheduleRepository.save(schedule);
+
         Arrays.stream(SeatNameType.values()).forEach(seatNameType ->
             seatRepository.save(Seat.builder().name(seatNameType).schedule(schedule).screen(screen).build()));
-        scheduleRepository.save(schedule);
     }
 
+    @Transactional
     public List<ScheduleViewResponseDto> getSchedulesBy(Long movieId, Long theaterId,
         LocalDate date) {
         List<Schedule> allSchedules = scheduleRepository.findAllByMovieIdAndTheaterIdAndDate(
