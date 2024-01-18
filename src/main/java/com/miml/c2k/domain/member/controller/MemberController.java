@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -33,7 +34,7 @@ public class MemberController {
     }
 
     @GetMapping("/myPage")
-    public String showMyPage(@RequestHeader(name = "accessToken") String accessToken, Model model) {
+    public String showMyPage(@RequestParam(name = "accessToken") String accessToken, Model model) {
         MemberResponseDto memberResponseDto = memberService.findMemberByAccessToken(accessToken);
 
         List<TicketInfoResponseDto> ticketInfoResponseDtos = ticketService.getAllTicketsInfoByMemberIdWithFetchJoinAndAsync(
