@@ -20,7 +20,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "JOIN FETCH s.screen sc " +
             "JOIN FETCH sc.theater " +
             "LEFT JOIN FETCH t.payment " +
-            "LEFT JOIN FETCH t.seats " +
+            "JOIN FETCH t.seats " +
             "WHERE t.member.id = :memberId")
     List<Ticket> findAllByMemberIdWithFetchJoin(Long memberId);
 
