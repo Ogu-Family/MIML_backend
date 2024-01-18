@@ -8,12 +8,16 @@ import com.miml.c2k.domain.schedule.dto.ScheduleViewResponseDto;
 import com.miml.c2k.domain.schedule.repository.ScheduleRepository;
 import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.screen.repository.ScreenRepository;
+import com.miml.c2k.domain.seat.Seat;
+import com.miml.c2k.domain.seat.Seat.SeatNameType;
 import com.miml.c2k.domain.seat.repository.SeatRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ public class ScheduleService {
     private final ScreenRepository screenRepository;
     private final SeatRepository seatRepository;
 
+    @Transactional
     public void saveSchedule(ScheduleSavingDto scheduleSavingDto) {
         validateNewSchedule(scheduleSavingDto);
 
@@ -37,8 +42,12 @@ public class ScheduleService {
         schedule.updateScreen(screen);
 
         scheduleRepository.save(schedule);
+
+        Arrays.stream(SeatNameType.values()).forEach(seatNameType ->
+            seatRepository.save(Seat.builder().name(seatNameType).schedule(schedule).screen(screen).build()));
     }
 
+    @Transactional
     public List<ScheduleViewResponseDto> getSchedulesBy(Long movieId, Long theaterId,
         LocalDate date) {
         List<Schedule> allSchedules = scheduleRepository.findAllByMovieIdAndTheaterIdAndDate(

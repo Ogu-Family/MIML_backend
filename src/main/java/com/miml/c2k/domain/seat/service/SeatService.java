@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +36,12 @@ public class SeatService {
         // 예약된 좌석을 가져와, 예약되지 않은 좌석을 구한다.
         List<Seat> reservedSeats = seatRepository.findAllReservedSeatsByScheduleId(scheduleId);
         Set<SeatNameType> reservedSeatNameTypes = getReservedSeatNameTypes(reservedSeats);
-        Set<SeatNameType> unReservedSeatNameTypes = getUnreservedSeatNameTypes(
+        Set<SeatNameType> unreservedSeatNameTypes = getUnreservedSeatNameTypes(
                 reservedSeatNameTypes);
 
         // 예약된 좌석과 예약되지 않은 좌석에 대한 ResponseDto를 반환한다.
         return getSortedSeatResponseDtos(scheduleId, reservedSeatNameTypes,
-                unReservedSeatNameTypes);
+                unreservedSeatNameTypes);
     }
 
     private Set<SeatNameType> getReservedSeatNameTypes(List<Seat> reservedSeats) {
@@ -48,17 +49,17 @@ public class SeatService {
     }
 
     private Set<SeatNameType> getUnreservedSeatNameTypes(Set<SeatNameType> reservedSeatNameTypes) {
-        Set<SeatNameType> allSeatNameTypes = Arrays.stream(SeatNameType.values())
+        Set<SeatNameType> allSeatNameTypes = Arrays.stream(SeatNameType.values()) // TODO: 상영관에 따라 좌석을 다르게 할 수도 있으므로 이 로직은 추후 수정
                 .collect(Collectors.toSet());
         allSeatNameTypes.removeAll(reservedSeatNameTypes);
         return allSeatNameTypes;
     }
 
     private List<SeatResponseDto> getSortedSeatResponseDtos(Long scheduleId,
-            Set<SeatNameType> reservedSeatNameTypes, Set<SeatNameType> unReservedSeatNameTypes) {
+            Set<SeatNameType> reservedSeatNameTypes, Set<SeatNameType> unreservedSeatNameTypes) {
         return Stream.concat(
                         createSeatResponseDtos(scheduleId, reservedSeatNameTypes, true).stream(),
-                        createSeatResponseDtos(scheduleId, unReservedSeatNameTypes, false).stream())
+                        createSeatResponseDtos(scheduleId, unreservedSeatNameTypes, false).stream())
                 .sorted(Comparator.comparing(seatDto -> seatDto.getSeatNameType().name()))
                 .toList();
     }
@@ -75,47 +76,38 @@ public class SeatService {
     }
 
 
+    @Transactional
     public ReservedSeatResponseDto reserveSeat(SeatRequestDto seatRequestDto, Long memberId) {
-        checkAlreadyReservedSeats(seatRequestDto);
         Schedule schedule = scheduleRepository.findById(seatRequestDto.getScheduleId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 상영 일정입니다."));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("가입되지 않은 회원입니다."));
-      
+
+        List<Seat> seats = validateAndGetSeats(seatRequestDto);
+
         Ticket ticket = ticketRepository.save(Ticket.builder().member(member).schedule(schedule).build());
 
-        List<Seat> reservedSeats = seatRequestDto.getSeatNameTypes().stream()
-                .map(seatNameType -> Seat.builder()
-                                .name(seatNameType)
-                                .screen(schedule.getScreen())
-                                .ticket(ticket)
-                                .build())
-                .collect(Collectors.toList());
-        seatRepository.saveAll(reservedSeats);
-        reservedSeats.forEach(ticket::addSeat);
+        seats.forEach(seat -> seat.setTicket(ticket));
 
-        return ReservedSeatResponseDto.create(ticket.getId(), reservedSeats);
+        return ReservedSeatResponseDto.create(ticket.getId(), seats);
     }
 
-    private void checkAlreadyReservedSeats(SeatRequestDto seatRequestDto) {
-        List<Seat> unReservableSeats = findUnreservableSeats(
-                seatRequestDto.getSeatNameTypes(),
-                seatRequestDto.getScheduleId());
+    private List<Seat> validateAndGetSeats(SeatRequestDto seatRequestDto) {
+        List<Seat> seatsToReserve = seatRepository.findAllByScheduleIdAndNameIn(
+            seatRequestDto.getScheduleId(), seatRequestDto.getSeatNameTypes());
 
-        if (!unReservableSeats.isEmpty()) {
-            String alreadyReservedSeatNames = unReservableSeats.stream()
+        List<Seat> alreadyReservedSeats = seatsToReserve.stream()
+            .filter(seat -> seat.getTicket() != null).toList();
+
+        if (!alreadyReservedSeats.isEmpty()) {
+            String alreadyReservedSeatNames = alreadyReservedSeats.stream()
                     .map(seat -> seat.getName().toString())
                     .collect(
                             Collectors.joining(", "));
-            throw new RuntimeException(alreadyReservedSeatNames + "는 이미 예약된 좌석입니다.");
+            throw new RuntimeException(alreadyReservedSeatNames + "(은)는 이미 예약된 좌석입니다."); // TODO: 사용자 정의 예외로 대체
         }
+
+        return seatsToReserve;
     }
 
-    private List<Seat> findUnreservableSeats(List<SeatNameType> seatNameTypes, Long scheduleId) {
-        List<Seat> alreadyReservedSeats = seatRepository.findAllReservedSeatsByScheduleId(
-                scheduleId);
-
-        return alreadyReservedSeats.stream()
-                .filter(seat -> seatNameTypes.contains(seat.getName())).toList();
-    }
 }

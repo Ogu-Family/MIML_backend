@@ -1,5 +1,6 @@
 package com.miml.c2k.domain.seat;
 
+import com.miml.c2k.domain.schedule.Schedule;
 import com.miml.c2k.domain.screen.Screen;
 import com.miml.c2k.domain.ticket.Ticket;
 import jakarta.persistence.Column;
@@ -38,11 +39,16 @@ public class Seat {
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
+
     @Builder
-    public Seat(SeatNameType name, Screen screen, Ticket ticket) {
+    public Seat(SeatNameType name, Screen screen, Ticket ticket, Schedule schedule) {
         this.name = name;
         this.screen = screen;
         this.ticket = ticket;
+        this.schedule = schedule;
     }
 
     public void setTicket(Ticket ticket) {
