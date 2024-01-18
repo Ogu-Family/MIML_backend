@@ -13,8 +13,8 @@
 
 ## 프로젝트 문서
 
-- [노션]()
-- [API 명세서]()
+- [노션](https://www.notion.so/backend-devcourse/MIML-2e8c5060b6134549be9fe4c5d4f883e9?pvs=4)
+- [API 명세서](https://www.notion.so/backend-devcourse/API-4279b265dd2f42fba1c8ff321107fdf7?pvs=4)
 
 
 ## Member
