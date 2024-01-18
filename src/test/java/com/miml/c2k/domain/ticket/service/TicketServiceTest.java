@@ -68,7 +68,7 @@ class TicketServiceTest {
                 .thenReturn(List.of(ticket));
 
         // when
-        List<TicketInfoResponseDto> ticketInfoResponseDtos = ticketService.getAllTicketsInfoByMemberIdWithFetchJoin(
+        List<TicketInfoResponseDto> ticketInfoResponseDtos = ticketService.getAllTicketsInfoByMemberIdWithFetchJoinAndAsync(
                 testMemberId);
 
         // then
