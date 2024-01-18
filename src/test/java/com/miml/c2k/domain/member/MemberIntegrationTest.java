@@ -2,6 +2,9 @@ package com.miml.c2k.domain.member;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,7 +56,8 @@ class MemberIntegrationTest {
 
     @BeforeEach
     void setup() {
-        Member member = memberRepository.save(new Member("kim", OAuthProvider.KAKAO, "kim@gmail.com"));
+        Member member = memberRepository.save(
+            new Member("kim", OAuthProvider.KAKAO, "kim@gmail.com"));
         accessToken = authTokensGenerator.generate(member.getId()).getAccessToken();
     }
 
@@ -68,24 +72,26 @@ class MemberIntegrationTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/members")
-                .header("accessToken", accessToken));
+            .header("accessToken", accessToken));
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.message").value("정상 처리"))
-                .andDo(document("memberResponseDto",
-                        responseFields(
-                                fieldWithPath("code").description("상태 코드"),
-                                fieldWithPath("message").description("처리 메시지"),
-                                fieldWithPath("data.id").description("회원 번호"),
-                                fieldWithPath("data.nickname").description("닉네임"),
-                                fieldWithPath("data.email").description("이메일"),
-                                fieldWithPath("data.oauthProvider").description("OAuth 제공사"),
-                                fieldWithPath("data.role").description("역할"),
-                                fieldWithPath("data.createdAt").description("생성 시간")
-                        ))
-                );
+            .andExpect(jsonPath("$.code").value(200))
+            .andExpect(jsonPath("$.message").value("정상 처리"))
+            .andDo(document("findMemberByAccessToken",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("code").description("상태 코드"),
+                    fieldWithPath("message").description("처리 메시지"),
+                    fieldWithPath("data.id").description("회원 번호"),
+                    fieldWithPath("data.nickname").description("닉네임"),
+                    fieldWithPath("data.email").description("이메일"),
+                    fieldWithPath("data.oauthProvider").description("OAuth 제공사"),
+                    fieldWithPath("data.role").description("역할"),
+                    fieldWithPath("data.createdAt").description("생성 시간")
+                ))
+            );
     }
 
     @Test
@@ -94,18 +100,19 @@ class MemberIntegrationTest {
 
         //given
         MemberResponseDto memberResponseDto = memberService.findMemberByAccessToken(accessToken);
-        List<TicketInfoResponseDto> allTicketsInfoByMemberId = ticketService.getAllTicketsInfoByMemberId(memberResponseDto.getId());
+        List<TicketInfoResponseDto> allTicketsInfoByMemberId = ticketService.getAllTicketsInfoByMemberId(
+            memberResponseDto.getId());
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/myPage")
-                .header("accessToken", accessToken));
+            .header("accessToken", accessToken));
 
         // then
         resultActions.andExpect(view().name("/myPage/myPage"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("memberResponseDto", hasProperty("nickname",
-                        Matchers.equalTo(memberResponseDto.getNickname()))))
-                .andExpect(model().attribute("ticketInfoResponseDtos", allTicketsInfoByMemberId));
+            .andExpect(status().isOk())
+            .andExpect(model().attribute("memberResponseDto", hasProperty("nickname",
+                Matchers.equalTo(memberResponseDto.getNickname()))))
+            .andExpect(model().attribute("ticketInfoResponseDtos", allTicketsInfoByMemberId));
     }
 
     @Test
@@ -117,25 +124,27 @@ class MemberIntegrationTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(put("/api/v1/myPage")
-                .header("accessToken", accessToken)
-                .content(new ObjectMapper().writeValueAsString(updateMemberDto))
-                .contentType(MediaType.APPLICATION_JSON));
+            .header("accessToken", accessToken)
+            .content(new ObjectMapper().writeValueAsString(updateMemberDto))
+            .contentType(MediaType.APPLICATION_JSON));
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.message").value("정상 처리"))
-                .andDo(document("memberResponseDto",
-                        responseFields(
-                                fieldWithPath("code").description("상태 코드"),
-                                fieldWithPath("message").description("처리 메시지"),
-                                fieldWithPath("data.id").description("회원 번호"),
-                                fieldWithPath("data.nickname").description("닉네임"),
-                                fieldWithPath("data.email").description("이메일"),
-                                fieldWithPath("data.oauthProvider").description("OAuth 제공사"),
-                                fieldWithPath("data.role").description("역할"),
-                                fieldWithPath("data.createdAt").description("생성 시간")
-                        ))
-                );
+            .andExpect(jsonPath("$.code").value(200))
+            .andExpect(jsonPath("$.message").value("정상 처리"))
+            .andDo(document("updateNicknameByAccessToken",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("code").description("상태 코드"),
+                    fieldWithPath("message").description("처리 메시지"),
+                    fieldWithPath("data.id").description("회원 번호"),
+                    fieldWithPath("data.nickname").description("닉네임"),
+                    fieldWithPath("data.email").description("이메일"),
+                    fieldWithPath("data.oauthProvider").description("OAuth 제공사"),
+                    fieldWithPath("data.role").description("역할"),
+                    fieldWithPath("data.createdAt").description("생성 시간")
+                ))
+            );
     }
 }
