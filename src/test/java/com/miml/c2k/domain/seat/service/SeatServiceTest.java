@@ -61,7 +61,7 @@ class SeatServiceTest {
                 screen).get(0);
         Ticket ticket = Ticket.builder().member(createMember()).schedule(schedule).build();
         List<Seat> reservedSeats = createReservedSeats(
-                ticket,
+                ticket, schedule,
                 Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());
         when(seatRepository.findAllReservedSeatsByScheduleId(schedule.getId())).thenReturn(
                 reservedSeats);
@@ -83,22 +83,23 @@ class SeatServiceTest {
         Schedule schedule = createSchedules(
                 createMoviesIsPlaying(1),
                 screen).get(0);
-        Ticket ticket = Ticket.builder().member(createMember()).schedule(schedule).build();
-        List<Seat> reservedSeats = createReservedSeats(
-                ticket,
-                Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());
         Member member = createMember();
+        Ticket ticket = Ticket.builder().member(member).schedule(schedule).build();
         SeatRequestDto seatRequestDto = SeatRequestDto.builder()
                 .scheduleId(schedule.getId())
                 .seatNameTypes(
                         Stream.of(SeatNameType.J14, SeatNameType.J15, SeatNameType.J16).toList())
                 .build();
+        List<Seat> seatsToReserve = List.of(
+            Seat.builder().name(SeatNameType.J14).schedule(schedule).screen(screen).build(),
+            Seat.builder().name(SeatNameType.J15).schedule(schedule).screen(screen).build(),
+            Seat.builder().name(SeatNameType.J16).schedule(schedule).screen(screen).build());
 
         when(scheduleRepository.findById(schedule.getId())).thenReturn(Optional.of(schedule));
         when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
         when(ticketRepository.save(any(Ticket.class))).thenReturn(ticket);
-        when(seatRepository.findAllReservedSeatsByScheduleId(schedule.getId())).thenReturn(
-                reservedSeats);
+        when(seatRepository.findAllByScheduleIdAndNameIn(schedule.getId(), seatRequestDto.getSeatNameTypes())).thenReturn(
+                seatsToReserve);
 
         // when
         ReservedSeatResponseDto reservedSeatResponseDto
@@ -117,22 +118,24 @@ class SeatServiceTest {
         // given
         Screen screen = createScreens(createTheaters()).get(0);
         Schedule schedule = createSchedules(
-                createMoviesIsPlaying(1),
-                screen).get(0);
-        SeatNameType alreadyReservedSeat = SeatNameType.J11;
-        Ticket ticket = Ticket.builder().member(createMember()).schedule(schedule).build();
-        List<Seat> reservedSeats = createReservedSeats(
-                ticket,
-                Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());
+            createMoviesIsPlaying(1),
+            screen).get(0);
         Member member = createMember();
+        Ticket ticket = Ticket.builder().member(member).schedule(schedule).build();
+        List<Seat> seatsToReserve = List.of(
+            Seat.builder().name(SeatNameType.J14).schedule(schedule).screen(screen).ticket(ticket).build(),
+            Seat.builder().name(SeatNameType.J15).schedule(schedule).screen(screen).build(),
+            Seat.builder().name(SeatNameType.J16).schedule(schedule).screen(screen).ticket(ticket).build());
         SeatRequestDto seatRequestDto = SeatRequestDto.builder()
-                .scheduleId(schedule.getId())
-                .seatNameTypes(
-                        Stream.of(alreadyReservedSeat, SeatNameType.J15, SeatNameType.J16).toList())
-                .build();
+            .scheduleId(schedule.getId())
+            .seatNameTypes(
+                Stream.of(SeatNameType.J14, SeatNameType.J15, SeatNameType.J16).toList())
+            .build();
 
-        when(seatRepository.findAllReservedSeatsByScheduleId(schedule.getId())).thenReturn(
-                reservedSeats);
+        when(scheduleRepository.findById(schedule.getId())).thenReturn(Optional.of(schedule));
+        when(memberRepository.findById(member.getId())).thenReturn(Optional.of(member));
+        when(seatRepository.findAllByScheduleIdAndNameIn(schedule.getId(), seatsToReserve.stream().map(Seat::getName).toList())).thenReturn(
+            seatsToReserve);
 
         // when
         RuntimeException exception
@@ -140,6 +143,6 @@ class SeatServiceTest {
                 () -> seatService.reserveSeat(seatRequestDto, member.getId()));
 
         // then
-        assertThat(exception.getMessage(), equalTo(alreadyReservedSeat + "는 이미 예약된 좌석입니다."));
+        assertThat(exception.getMessage(), equalTo("J14, J16(은)는 이미 예약된 좌석입니다."));
     }
 }

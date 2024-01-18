@@ -76,10 +76,8 @@
   document.addEventListener("DOMContentLoaded", async () => {
     await fetch("/api/v1/theaters", { method: "get" })
     .then(res => { return res.json(); })
-    .then(data => {
-      console.log(data);
-
-      data.forEach(theater => {
+    .then(res => {
+      res.data.forEach(theater => {
         const theaterOption = document.createElement("option");
 
         theaterOption.value = theater.id;

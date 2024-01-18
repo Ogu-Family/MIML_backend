@@ -91,17 +91,18 @@ public class DataFactoryUtil {
         return screens;
     }
 
-    public static List<Seat> createReservedSeats(Ticket ticket, List<SeatNameType> seatNameTypes) {
+    public static List<Seat> createReservedSeats(Ticket ticket, Schedule schedule, List<SeatNameType> seatNameTypes) {
         return seatNameTypes.stream().map(
-                        seatNameType -> createReservedSeat(ticket, seatNameType))
+                        seatNameType -> createReservedSeat(ticket, schedule, seatNameType))
                 .toList();
     }
 
-    private static Seat createReservedSeat(Ticket ticket, SeatNameType seatNameType) {
+    private static Seat createReservedSeat(Ticket ticket, Schedule schedule, SeatNameType seatNameType) {
         return Seat.builder()
                 .name(seatNameType)
                 .screen(ticket.getSchedule().getScreen())
                 .ticket(ticket)
+                .schedule(schedule)
                 .build();
     }
 }

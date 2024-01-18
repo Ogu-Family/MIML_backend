@@ -57,9 +57,9 @@ class SeatRepositoryTest {
                 createSchedules(movieRepository.saveAll(createMoviesIsPlaying(1)), screen)).get(0);
         Member member = memberRepository.save(createMember());
         Ticket ticket = ticketRepository.save(Ticket.builder().member(member).schedule(schedule).build());
-        List<Seat> seatsToReserve = createReservedSeats(ticket,
+        List<Seat> seatsToReserve = createReservedSeats(ticket, schedule,
                 Stream.of(SeatNameType.J11, SeatNameType.J12, SeatNameType.J13).toList());
-      
+
         seatRepository.saveAll(seatsToReserve);
 
         // when
