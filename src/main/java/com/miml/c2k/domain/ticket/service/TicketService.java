@@ -14,6 +14,9 @@ import com.miml.c2k.domain.ticket.dto.TicketInfoResponseDto;
 import com.miml.c2k.domain.ticket.repository.TicketRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +38,7 @@ public class TicketService {
 
         tickets.forEach(ticket -> {
             ticket.changeStatusCorrectly();
-            addTicketInfoResponseDtosByTicket(ticket, ticketInfoResponseDtos);
+            addTicketInfoResponseDtosByTicketWithoutFetchJoin(ticket, ticketInfoResponseDtos);
         });
 
         return ticketInfoResponseDtos;
@@ -43,7 +46,8 @@ public class TicketService {
 
     @Transactional
     public void cancelTicket(Long ticketId) {
-        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(RuntimeException::new); // TODO: 사용자 정의 예외 생성
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(RuntimeException::new); // TODO: 사용자 정의 예외 생성
 
         ticket.getSeats().forEach(seat -> seatRepository.deleteById(seat.getId()));
         ticket.getSeats().clear();
@@ -51,7 +55,7 @@ public class TicketService {
         ticket.cancel();
     }
 
-    private void addTicketInfoResponseDtosByTicket(Ticket ticket,
+    private void addTicketInfoResponseDtosByTicketWithoutFetchJoin(Ticket ticket,
             List<TicketInfoResponseDto> ticketInfoResponseDtos) {
         // TODO: 추후 비동기 처리
         Schedule relatedSchedule = ticketRepository.findScheduleByTicketId(ticket.getId())
@@ -71,10 +75,80 @@ public class TicketService {
         Payment relatedPayment = ticketRepository.findPaymentByTicketId(ticket.getId())
                 .orElseGet(Payment::new);
 
-        TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(ticket, relatedMovie,
+        TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(ticket,
+                relatedMovie,
                 relatedTheater, relatedSchedule, relatedScreen, relatedPayment,
                 relatedSeats.stream().map(Seat::getName).toList());
 
         ticketInfoResponseDtos.add(ticketInfoResponseDto);
+    }
+
+
+    @Transactional
+    public List<TicketInfoResponseDto> getAllTicketsInfoByMemberIdWithFetchJoin(Long memberId) {
+        List<TicketInfoResponseDto> ticketInfoResponseDtos = new ArrayList<>();
+        List<Ticket> tickets = ticketRepository.findAllByMemberIdWithFetchJoin(memberId);
+
+        tickets.forEach(ticket -> {
+            ticket.changeStatusCorrectly();
+            addTicketInfoResponseDtosByTicket(ticket, ticketInfoResponseDtos);
+        });
+
+        return ticketInfoResponseDtos;
+    }
+
+    private void addTicketInfoResponseDtosByTicket(Ticket ticket,
+            List<TicketInfoResponseDto> ticketInfoResponseDtos) {
+        Theater theater = ticket.getSchedule().getScreen().getTheater();
+        List<Seat> seats = ticket.getSeats();
+        Payment payment = ticket.getPayment() == null ? new Payment() : ticket.getPayment();
+
+        TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(
+                ticket, ticket.getSchedule().getMovie(), theater,
+                ticket.getSchedule(), ticket.getSchedule().getScreen(),
+                payment,
+                seats.stream().map(Seat::getName).toList());
+
+        ticketInfoResponseDtos.add(ticketInfoResponseDto);
+    }
+
+
+    @Transactional
+    public List<TicketInfoResponseDto> getAllTicketsInfoByMemberIdWithFetchJoinAndAsync(
+            Long memberId) {
+        Map<Long, TicketInfoResponseDto> ticketInfoResponseDtoMap = new ConcurrentHashMap<>();
+
+        List<CompletableFuture<Void>> ticketFutureList = ticketRepository.findAllByMemberIdWithFetchJoin(
+                        memberId)
+                .stream()
+                // 각 티켓에 대해 비동기적으로 작업을 실행
+                // 각 티켓마다 실행되는 작업: 티켓 상태 체크 -> 티켓 관련 정보 가져오기
+                .map(ticket -> CompletableFuture.runAsync(() -> {
+                    ticket.changeStatusCorrectly();
+                    addTicketInfoResponseDtoMapByTicket(ticket, ticketInfoResponseDtoMap);
+                }))
+                .toList();
+
+        // 모든 비동기 작업이 완료될 때까지 대기
+        CompletableFuture.allOf(
+                ticketFutureList.toArray(new CompletableFuture[ticketFutureList.size()])
+        ).join();
+
+        return new ArrayList<>(ticketInfoResponseDtoMap.values());
+    }
+
+    private void addTicketInfoResponseDtoMapByTicket(Ticket ticket,
+            Map<Long, TicketInfoResponseDto> ticketInfoResponseDtos) {
+        Theater theater = ticket.getSchedule().getScreen().getTheater();
+        List<Seat> seats = ticket.getSeats();
+        Payment payment = ticket.getPayment() == null ? new Payment() : ticket.getPayment();
+
+        TicketInfoResponseDto ticketInfoResponseDto = TicketInfoResponseDto.create(
+                ticket, ticket.getSchedule().getMovie(), theater,
+                ticket.getSchedule(), ticket.getSchedule().getScreen(),
+                payment,
+                seats.stream().map(Seat::getName).toList());
+
+        ticketInfoResponseDtos.put(ticket.getId(), ticketInfoResponseDto);
     }
 }
