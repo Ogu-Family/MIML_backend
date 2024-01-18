@@ -2,7 +2,6 @@
 
 > Movie Is My Life, 롯데시네마 영화 예매 클론 프로젝트입니다!
 
-----
 
 ## 프로젝트 목표
 
@@ -11,14 +10,12 @@
 - 상용 서비스의 도메인 분석 및 구현 경험
 - 동시성 이슈 해결 및 성능 최적화
 
------
 
 ## 프로젝트 문서
 
 - [노션]()
 - [API 명세서]()
 
-----
 
 ## Member
 
@@ -27,7 +24,6 @@
 | Profile | <img width="100px" src="https://github.com/JeongeunChoi.png" /> | <img width="100px" src="https://github.com/ZZAMBAs.png" /> | <img width="100px" src="https://github.com/GiHoo.png" /> |
 |  Role   |                          Scrum Master                           |                       Product Owner                        |                        Developer                         |
 
-----
 
 ## 🛠 기술 스택
 
@@ -47,6 +43,7 @@
 <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
 </p>
 
+
 ## ✏️ 문서/협업
 
 <p>
@@ -59,25 +56,24 @@
 <img src="https://img.shields.io/badge/spring rest docs-6DB33F?style=for-the-badge">
 </p>
 
-----
 
 ## ERD
 
-![스크린샷 2024-01-18 11.53.34.png](..%2F..%2F..%2F..%2F..%2F..%2Fvar%2Ffolders%2Fxb%2Fnmk53nx90jd9bn_lsgqv_qsm0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_zmF8vi%2F%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-01-18%2011.53.34.png)
+![스크린샷 2024-01-18 13 59 14](https://github.com/Ogu-Family/MIML_backend/assets/87390396/3fc7150f-5919-4789-8c90-0f0c2cefa788)
 
 [ERD 링크](https://www.erdcloud.com/d/TYGrwdn9Kj5wnb4RQ)
 
-----
 
 ## Convention
 
 ### Branch 전략
 
-![branches.svg](..%2F..%2F..%2F..%2FDownloads%2Fbranches.svg)
+![branches](https://github.com/Ogu-Family/MIML_backend/assets/87390396/d6bac32d-7453-4ac4-850b-671d56ddf6c0)
 
 - Main : 최종 버전 브랜치
 - Develop : Merge 전용 브랜치
 - Feature : 하나의 이슈마다 하나의 브랜치 생성(feature/[이슈번호])
+
 
 ### Commit Convention
 
