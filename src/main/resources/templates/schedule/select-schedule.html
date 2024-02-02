@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <meta charset="UTF-8">
+  <title>영화 선택 화면</title>
+</head>
+<body>
+<div>
+  <p>영화 선택</p>
+  <select id="movieSelect" name="movieSelect"></select>
+</div>
+<div>
+  <p>영화관 선택</p>
+  <select id="theaterSelect" name="theaterSelect"></select>
+</div>
+<div>
+  <p>날짜 선택</p>
+  <input type="date" name="dateSelect" id="dateSelect" required/>
+</div>
+<div>
+  <p>인원 수 선택</p>
+  <input type="number" name="seatCount" id="seatCount" min="1" value="1" required/>
+</div>
+<div>
+  <p>상영 일정 검색</p>
+  <button type="button" onclick="loadSchedules()">검색</button>
+</div>
+<div id="schedules"></div>
+<div id="toast"></div>
+</body>
+<script th:inline="javascript">
+  document.addEventListener("DOMContentLoaded", () => {
+    setDateInputLimit();
+    loadMovies();
+    loadTheaters();
+  })
+
+  const loadSchedules = async () => {
+    const [movieSelect, theaterSelector, dateSelect, seatCountInput, schedules] = [
+      document.querySelector("#movieSelect"),
+      document.querySelector("#theaterSelect"),
+      document.querySelector("#dateSelect"),
+      document.querySelector("#seatCount"),
+      document.querySelector("#schedules")
+    ];
+
+    if (!movieSelect.value || !theaterSelector.value || !dateSelect.value || !seatCountInput.value) {
+      toastPopUp("모든 값을 입력해 주세요!");
+      return;
+    }
+
+    schedules.innerHTML = "";
+
+    const params = new URLSearchParams({
+      movieId: movieSelect.value,
+      theaterId: theaterSelector.value,
+      date: dateSelect.value
+    });
+
+    console.log("params: " + params);
+
+    await fetch(`/api/v1/schedules?${params.toString()}`)
+    .then(res => res.json())
+    .then(dtos => {
+      dtos.data.forEach((schedule) => {
+        const scheduleButton = document.createElement("button");
+        scheduleButton.textContent = schedule.screenNum + "관\n" + schedule.startTime + " ~ " + schedule.endTime + "\n" + schedule.availableSeatsCount + "/" + schedule.totalSeatsCount;
+        scheduleButton.value = schedule.id;
+        scheduleButton.onclick = () => {
+          const seatCount = seatCountInput.value || 1; // Default to 1 if seatCount is not provided
+          window.location.href = `/seats?schedule_id=${schedule.id}&seat_count=${seatCount}`;
+        };
+
+        schedules.appendChild(scheduleButton);
+      });
+    })
+  }
+
+  const setDateInputLimit = () => {
+    const nowUtc = Date.now() // 지금 날짜를 밀리초로
+    const timeOff = new Date().getTimezoneOffset() * 60000; // 분단위를 밀리초로 변환
+
+    const todayMillis = nowUtc - timeOff;
+    const millisOf7Days = 7 * 24 * 60 * 60 * 1000;
+
+    const today = new Date(todayMillis).toISOString().split("T")[0];
+    const after7Days = new Date(todayMillis + millisOf7Days).toISOString().split("T")[0];
+
+    document.querySelector("#dateSelect").setAttribute("min", today);
+    document.querySelector("#dateSelect").setAttribute("max", after7Days);
+  };
+
+  const loadMovies = async () => {
+    return await fetch("/api/v1/movies?playing_status=is_playing")
+    .then(res => res.json())
+    .then(res => {
+      console.log("movies: " + res.data);
+
+      const movieSelect = document.querySelector("#movieSelect");
+
+      res.data.forEach(movie => {
+        const movieOption = document.createElement("option");
+        movieOption.text = movie.title;
+        movieOption.value = movie.id;
+
+        movieSelect.appendChild(movieOption);
+      });
+    });
+  };
+
+  const loadTheaters = async () => {
+    return await fetch("/api/v1/theaters")
+    .then(res => { return res.json(); })
+    .then(res => {
+      console.log(res.data);
+
+      res.data.forEach(theater => {
+        const theaterOption = document.createElement("option");
+
+        theaterOption.value = theater.id;
+        theaterOption.text = theater.name;
+
+        theaterSelect.appendChild(theaterOption);
+      })
+    })
+  };
+
+  const toastPopUp = (string) => {
+    console.log("Toast");
+
+    const toast = document.querySelector("#toast");
+
+    toast.classList.contains("reveal") ?
+        (clearTimeout(removeToast), removeToast = setTimeout(() => {
+          document.querySelector("#toast").classList.remove("reveal")
+        }, 1000)) :
+        removeToast = setTimeout(() => {
+          document.querySelector("#toast").classList.remove("reveal")
+        }, 1000);
+    toast.classList.add("reveal");
+    toast.innerText = string
+  };
+</script>
+</html>

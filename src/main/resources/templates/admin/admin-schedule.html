@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>영화 일정 추가 페이지</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+  <form action="/admin/schedules" method="post">
+    <div>
+      <p>영화 선택</p>
+      <select class="form-select" name="movieId" onchange="showSelectedMovieInfo(this)">
+        <option value="default-movie" selected>상영할 영화를 선택합니다.</option>
+        <option th:id="'movie' + ${movie.id}" th:each="movie: ${movieAdminResponseDtos}" th:value="${movie.id}" th:text="${movie.title}" th:attr="data-poster=${movie.poster}, data-movie-id=${movie.id}, data-director=${movie.director}">목록</option>
+      </select>
+    </div>
+    <div>
+      <div style="display: flex; align-items: center; justify-content: center; padding: 1rem">
+        <img id="movieImg" th:src="@{/default.png}" alt="영화 포스터" width="300"/>
+        <div>
+          <p id="movieId"></p>
+          <p id="movieDirector"></p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <label for="theaterSelect">영화관 선택</label>
+      <select id="theaterSelect" name="theaterId" class="form-select"  onchange="theaterChange(this)">
+        <option>선택하세요</option>
+      </select>
+      <label for="screenSelect">상영관 선택</label>
+      <select id="screenSelect" name="screenId" class="form-select"></select>
+    </div>
+    <div>
+      <label for="startTime">상영 시작 시각</label>
+      <input type="datetime-local" id="startTime" name="startTime" required>
+      <label for="endTime">상영 종료 시각</label>
+      <input type="datetime-local" id="endTime" name="endTime" required>
+    </div>
+    <br />
+    <br />
+    <div>
+      <button type="submit">제출</button>
+    </div>
+  </form>
+</body>
+<script th:inline="javascript">
+  const fetchScreens = async () => {
+    return await fetch("/api/v1/screens").then(res => res.json());
+  }
+
+  const showSelectedMovieInfo = (selectTag) => {
+    console.log(selectTag.id);
+
+    if (selectTag.value === "default-movie") {
+      document.querySelector("#movieImg").src = "/default.png";
+      document.querySelector("#movieId").textContent = document.querySelector("#movieDirector").textContent = "";
+      return;
+    }
+
+    console.log(selectTag.value);
+
+    const selectedOption = document.querySelector("#movie" + selectTag.value);
+
+    document.querySelector("#movieImg").src = "/" + selectedOption.getAttribute("data-poster");
+    document.querySelector("#movieId").textContent = "영화 id:" + selectedOption.getAttribute("data-movie-id");
+    document.querySelector("#movieDirector").textContent = "감독: " + selectedOption.getAttribute("data-director");
+  }
+
+  const theaterSelect = document.querySelector("#theaterSelect");
+  const screenSelect = document.querySelector("#screenSelect");
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    await fetch("/api/v1/theaters", { method: "get" })
+    .then(res => { return res.json(); })
+    .then(res => {
+      res.data.forEach(theater => {
+        const theaterOption = document.createElement("option");
+
+        theaterOption.value = theater.id;
+        theaterOption.text = theater.name;
+
+        theaterSelect.appendChild(theaterOption);
+      })
+    })
+  })
+
+  const theaterChange = async (theater) => {
+    screenSelect.innerHTML = "";
+
+    const screens = await fetchScreens();
+
+    console.log(screens);
+
+    const filteredScreens = screens.filter(screen => {
+      console.log(screen);
+      console.log(theater.value)
+
+      return screen.theaterId == theater.value;
+    });
+
+    filteredScreens.forEach(screen => {
+      const screenOption = document.createElement("option");
+
+      screenOption.value = screen.id;
+      screenOption.text = screen.num;
+
+      screenSelect.appendChild(screenOption);
+    });
+
+  }
+</script>
+</html>

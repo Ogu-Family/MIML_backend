@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Your Page Title</title>
+
+  <!-- Include Bootstrap CSS from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-rbsrJbEtnzE2sUmJw5WiQ5cn0mOHXiAe5F4VJ1f4lBBG3zFjQ8q2Bo1Vl1Oi2C2o" crossorigin="anonymous">
+
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f8f9fa; /* Bootstrap background color */
+    }
+
+    .container {
+      background-color: #ffffff; /* White background */
+      padding: 40px;
+      border-radius: 15px; /* Rounded corners */
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+    }
+
+    .ticket-active {
+      background-color: #b6fff3;
+    }
+
+    .ticket-inactive {
+      background-color: #c8c8c8;
+    }
+
+    .ticket-before-payment {
+      background-color: #fff09d;
+    }
+
+    .ticket-canceled {
+      background-color: #ff9582;
+    }
+
+    h2 {
+      color: #007bff; /* Bootstrap primary color */
+    }
+
+    #editNicknameBtn {
+      margin-top: 15px;
+    }
+
+    #editNicknameForm {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container text-center">
+  <h2 class="mb-4">안녕하세요, <span id="nickname" th:text="${memberResponseDto.nickname}"></span>님!</h2>
+
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <p>닉네임: <span id="displayNickname" th:text="${memberResponseDto.nickname}"></span></p>
+      <p>이메일: <span th:text="${memberResponseDto.email}"></span></p>
+      <p>가입한 플랫폼: <span th:text="${memberResponseDto.oAuthProvider}"></span></p>
+
+      <button id="editNicknameBtn" class="btn btn-primary">수정</button>
+
+      <div id="editNicknameForm" style="display: none;">
+        <input type="text" id="newNickname" class="form-control" placeholder="새로운 닉네임" th:value="${memberResponseDto.nickname}">
+        <button id="saveNicknameBtn" class="btn btn-success">저장</button>
+        <button id="cancelEditBtn" class="btn btn-secondary">취소</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <div th:class="${ticket.ticketStatus().getThymeleafClass()}" th:each="ticket : ${ticketInfoResponseDtos}">
+    <img th:src="@{'/' + ${ticket.poster()}}" alt="포스터" width="150">
+    <p th:text="${ticket.movieTitle()}"></p>
+    <p th:text="${ticket.screenNum()} + '관'"></p>
+    <p th:text="${ticket.theaterName()}"></p>
+    <p th:text="${#temporals.format(ticket.startTime(), 'yyyy-MM-dd HH:mm')}"></p>
+    <div th:each="seat : ${ticket.seatNameTypes()}">
+      <span th:text="${seat} + ' '"></span>
+    </div>
+    <p th:text="${ticket.paymentFee() + ' 원'}"></p>
+    <button th:if="${ticket.ticketStatus()} == ${ticket.ticketStatus().ACTIVE}" th:text="취소" th:onclick="'deleteTicket(' + ${ticket.id()} + ')'"></button>
+    <button th:if="${ticket.ticketStatus()} == ${ticket.ticketStatus().BEFORE_PAYMENT}" th:text="결제하기"></button>
+  </div>
+</div>
+
+<script>
+  const deleteTicket = async (ticketId) => {
+    await fetch(`/api/v1/ticket/${ticketId}`, {
+      method: 'DELETE'
+    });
+
+    window.history.go(0);
+  }
+</script>
+
+<!-- Include Bootstrap JS dependencies: jQuery and Popper.js -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-4e5rxw8w7hT0zDbDA7EdNoiFw04FQ9gzZxJ+3Z9ow1TMmS7bWB1DJ9gIKGOElCzE" crossorigin="anonymous"></script>
+
+<!-- Include Bootstrap JS from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+</body>
+</html>

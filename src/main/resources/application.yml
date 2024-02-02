@@ -8,4 +8,4 @@ spring:
     url: jdbc:mysql://localhost/miml
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root1234!
+    password:
